@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import CustomUserCreationForm, DepositForm, SpendForm
+from .forms import CustomUserCreationForm, DepositForm, SpendForm, EmailAuthenticationForm
 from .models import UserProfile, Deposit, Spend, Transactions
 from django.db.models import Sum
 
@@ -14,7 +14,7 @@ def register(request):
             user = form.save()
             UserProfile.objects.create(user=user)
             messages.success(request, 'Account created successfully. Please log in.')
-            return redirect('login')
+            return redirect('account:login')
     else:
         form = CustomUserCreationForm()
 
@@ -22,21 +22,28 @@ def register(request):
 
 
 # User login view
+from django.contrib.auth.forms import AuthenticationForm
 def user_login(request):
     if request.method == 'POST':
-        email = request.POST['email']
-        password = request.POST['password']
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
 
-        user = authenticate(request, email=email, password=password)
-
-        if user is not None:
-            login(request, user)
-            messages.success(request, 'Login successful!')
-            return redirect('profile')
+            if user is not None:
+                login(request, user)
+                messages.success(request, f"Welcome back, {user.username}!")
+                return redirect('account:profile')  # Redirect to your dashboard or home page
+            else:
+                messages.error(request, "Invalid username or password.")
         else:
-            messages.error(request, 'Invalid email or password.')
+            messages.error(request, "Invalid username or password.")
+    else:
+        form = AuthenticationForm()
 
-    return render(request, 'account/login.html')
+    return render(request, 'account/login.html', {'form': form})
+
 
 
 # User logout view
@@ -44,7 +51,7 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     messages.success(request, 'Logged out successfully.')
-    return redirect('login')
+    return redirect('account:login')
 
 
 # User profile view
@@ -81,7 +88,7 @@ def deposit(request):
                 status='PENDING'
             )
             messages.success(request, 'Deposit created, pending approval.')
-            return redirect('profile')
+            return redirect('account:profile')
     else:
         form = DepositForm()
 
@@ -111,7 +118,7 @@ def spend(request):
             else:
                 messages.error(request, 'Insufficient XP balance.')
 
-            return redirect('profile')
+            return redirect('account:profile')
     else:
         form = SpendForm()
 

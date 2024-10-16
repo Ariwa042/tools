@@ -26,7 +26,9 @@ AUTH_USER_MODEL = 'account.User'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*', 'https://192de2ff-fa13-4f44-a6bf-f68cd7b393ed-00-2f0gsck77ssp5.kirk.replit.dev']
+ALLOWED_HOSTS = ['*', 'https://d3573265-1bd9-49cf-8036-6423d958b3a2-00-2vftip5sza6pa.worf.replit.dev/']
+
+CSRF_TRUSTED_ORIGINS = ['https://d3573265-1bd9-49cf-8036-6423d958b3a2-00-2vftip5sza6pa.worf.replit.dev']
 
 # Application definition
 
@@ -127,8 +129,32 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # settings.py
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'your_email@gmail.com'
-EMAIL_HOST_PASSWORD = 'your_email_password'
+#EMAIL_HOST = 'smtp.gmail.com'
+#EMAIL_PORT = 587
+#EMAIL_USE_TLS = True
+#EMAIL_HOST_USER = 'escrowtrade02@gmail.com'  # Replace with your Gmail address
+#EMAIL_HOST_PASSWORD = 'lkeb fkzs dofo qxtp' # Your Gmail app password
+
+EMAIL_BACKENDS = {
+    'AIRDROP': {
+        'EMAIL_HOST': 'smtp.gmail.com',
+        'EMAIL_PORT': 587,
+        'EMAIL_HOST_USER': 'escrowtrade02@gmail.com',
+        'EMAIL_HOST_PASSWORD': 'lkeb fkzs dofo qxtp',
+        'EMAIL_USE_TLS': True,
+    },
+    'GIVEAWAY': {
+        'EMAIL_HOST': 'smtp.gmail.com',
+        'EMAIL_PORT': 587,
+        'EMAIL_HOST_USER': 'escrowtrade02@gmail.com',
+        'EMAIL_HOST_PASSWORD': 'lkeb fkzs dofo qxtp',
+        'EMAIL_USE_TLS': True,
+    },
+    'REFUND': {
+        'EMAIL_HOST': 'smtp.gmail.com',
+        'EMAIL_PORT': 587,
+        'EMAIL_HOST_USER': 'escrowtrade02@gmail.com',
+        'EMAIL_HOST_PASSWORD': 'lkeb fkzs dofo qxtp',
+        'EMAIL_USE_TLS': True,
+    },
+}

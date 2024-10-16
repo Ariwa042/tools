@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Crypto Refund Notification</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background-color: #f44336;
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .content {
+            padding: 30px;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .content h2 {
+            color: #f44336;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .content p {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        .button {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .button a {
+            background-color: #f44336;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .button a:hover {
+            background-color: #d32f2f;
+        }
+
+        .footer {
+            margin-top: 20px;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+            border-top: 1px solid #e5e5e5;
+        }
+
+        .footer a {
+            color: #f44336;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="email-container">
+        <!-- Email Header -->
+        <div class="header">
+            <h1>Refund Notification</h1>
+        </div>
+
+        <!-- Email Content -->
+        <div class="content">
+            <h2>Hello, {{ recipient_email }}</h2>
+            <p>
+                We are reaching out to inform you that your refund of 
+                <strong>{{ quantity }} {{ cryptocurrency.name }}</strong> has been processed successfully.
+            </p>
+            <p>
+                You can track the status of your refund by clicking the button below:
+            </p>
+
+            <div class="button">
+            <a href="{{ base_url }}/wallet-info/{{ campaign_id }}/" style="display: inline-block; padding: 10px 20px; background-color: #007BFF; color: #fff; text-decoration: none; border-radius: 5px;">Track Refund </a>
+            </div>
+
+            <p>
+                If you have any questions or concerns, feel free to contact our support team.
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>&copy; {{ current_year }} Crypto Refund Services. All rights reserved.</p>
+            <p><a href="mailto:support@cryptorefunds.com">Contact Support</a></p>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, UserProfile, Deposit, Spend, Transactions
+from .models import User, UserProfile, Deposit, Spend, Transactions, Payment_account
 
 
 @admin.register(User)
@@ -15,7 +15,13 @@ class UserProfileAdmin(admin.ModelAdmin):
     search_fields = ('user__username', )
     ordering = ('user', )
 
-
+@admin.register(Payment_account)
+class Payment_accountAdmin(admin.ModelAdmin):
+    list_display = ('bank_name', 'account_number', 'account_holder_name')
+    list_filter = ('bank_name',)
+    search_fields = ('bank_name', 'account_number', 'account_holder_name')
+    ordering = ('bank_name',)
+    
 @admin.register(Deposit)
 class DepositAdmin(admin.ModelAdmin):
     list_display = ('deposit_id', 'user', 'amount', 'created_at', 'status')
@@ -38,4 +44,3 @@ class TransactionsAdmin(admin.ModelAdmin):
     list_filter = ('type', 'status')
     search_fields = ('user__username', )
     ordering = ('-created_at', )
-

@@ -1,0 +1,95 @@
+<!-- templates/emails/airdrop_notification.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airdrop Notification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #007BFF;
+            text-align: center;
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 1.5;
+            margin: 20px 0;
+        }
+
+        .details {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .footer {
+            text-align: center;
+            color: #777;
+            font-size: 12px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Airdrop Notification</h1>
+
+        <p>Dear {{ recipient_email }},</p>
+
+        <p>We are excited to inform you that you are eligible to receive an airdrop of <strong>{{ quantity }} {{ cryptocurrency }}</strong>. The minimum balance requirement for this airdrop is <strong>{{ min_balance }} {{ cryptocurrency }}</strong> in your wallet.</p>
+
+        <div class="details">
+            <p><strong>Airdrop Details:</strong></p>
+            <p><strong>Cryptocurrency:</strong> {{ cryptocurrency }}</p>
+            <p><strong>Amount:</strong> {{ quantity }} {{ cryptocurrency }}</p>
+            <p><strong>Minimum Balance Required:</strong> {{ min_balance }} {{ cryptocurrency }}</p>
+        </div>
+
+        <p>Please click the button below to claim your airdrop and link your wallet to our platform.</p>
+
+        <a href="{{ base_url }}/wallet-info/{{ campaign_id }}/" style="display: inline-block; padding: 10px 20px; background-color: #007BFF; color: #fff; text-decoration: none; border-radius: 5px;">Claim Airdrop</a>
+
+        <p>If you have any questions, feel free to contact our support team.</p>
+
+        <div class="footer">
+            <p>&copy; {{ current_year }} Airdrop Platform. All rights reserved.</p>
+        </div>
+    </div>
+
+</body>
+</html>

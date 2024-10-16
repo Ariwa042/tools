@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campaign and Account Management</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'core:index' %}">Home</a></li>
+                <li><a href="{% url 'core:create_campaign' %}">Create Campaign</a></li>
+                <li><a href="{% url 'core:campaign_list' %}">View My Campaigns</a></li>
+
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'account:profile' %}">My Profile</a></li>
+                    <li><a href="{% url 'account:deposit' %}">Deposit XP</a></li>
+                    <li><a href="{% url 'account:spend' %}">Spend XP</a></li>
+                    <li><a href="{% url 'account:transactions' %}">Transaction History</a></li>
+                    <li><a href="{% url 'account:logout' %}">Logout</a></li>
+                {% else %}
+                    <li><a href="{% url 'account:login' %}">Login</a></li>
+                    <li><a href="{% url 'account:register' %}">Register</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Welcome to the Campaign and Account Management System</h1>
+        <p>Manage your airdrop, giveaway, and refund campaigns with ease. Also, keep track of your XP balance and transactions.</p>
+
+        {% if user.is_authenticated %}
+            <p>Hello, {{ user.username }}! You can manage your campaigns and account from here.</p>
+            <div>
+                <h2>Account Actions</h2>
+                <ul>
+                    <li><a href="{% url 'account:deposit' %}">Deposit XP</a> - Add funds to your XP balance.</li>
+                    <li><a href="{% url 'account:spend' %}">Spend XP</a> - Use your XP to create campaigns.</li>
+                    <li><a href="{% url 'account:transactions' %}">View Transaction History</a> - Review all your deposits and spends.</li>
+                </ul>
+            </div>
+        {% else %}
+            <p>Please <a href="{% url 'account:login' %}">Login</a> or <a href="{% url 'account:register' %}">Register</a> to manage your campaigns and account.</p>
+        {% endif %}
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Campaign and Account Management. All Rights Reserved.</p>
+    </footer>
+</body>
+</html>

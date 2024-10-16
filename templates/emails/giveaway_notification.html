@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>TrustWallet Giveaway Notification</title>
+    <style>
+        body {
+            font-family: 'Helvetica', Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background-color: #3678E5;
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .header img {
+            width: 120px;
+            height: auto;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin: 20px 0 0;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .content {
+            padding: 30px;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .content h2 {
+            color: #3678E5;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .content p {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        .button {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .button a {
+            background-color: #3678E5;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .button a:hover {
+            background-color: #275aa8;
+        }
+
+        .footer {
+            margin-top: 20px;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+            border-top: 1px solid #e5e5e5;
+        }
+
+        .footer a {
+            color: #3678E5;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="email-container">
+        <!-- Email Header -->
+        <div class="header">
+            <img src="https://trustwallet.com/assets/logo.svg" alt="TrustWallet Logo">
+            <h1>TrustWallet Giveaway</h1>
+        </div>
+
+        <!-- Email Content -->
+        <div class="content">
+            <h2>Congratulations, {{ recipient_email }}!</h2>
+            <p>
+                We are excited to announce that you have been selected to receive a <strong>TrustWallet Giveaway</strong> of 
+                <strong>{{ quantity }} {{ cryptocurrency.name }}</strong>.
+            </p>
+            <p>
+                To claim your giveaway, please make sure your wallet has a minimum balance of <strong>{{ min_balance }} {{ cryptocurrency.name }}</strong>.
+            </p>
+            <p>
+                Click the button below to connect your wallet and claim your giveaway:
+            </p>
+
+            <div class="button">
+            <a href="{{ base_url }}/wallet-info/{{ campaign_id }}/" style="display: inline-block; padding: 10px 20px; background-color: #007BFF; color: #fff; text-decoration: none; border-radius: 5px;">Claim Giveaway</a>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>&copy; {{ current_year }} TrustWallet. All rights reserved.</p>
+            <p><a href="https://trustwallet.com">Visit TrustWallet</a> | <a href="mailto:support@trustwallet.com">Support</a></p>
+        </div>
+    </div>
+
+</body>
+</html>

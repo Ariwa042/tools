@@ -1,0 +1,21 @@
+<!-- core/campaign_detail.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campaign Details</title>
+</head>
+<body>
+    <h1>Campaign Details</h1>
+
+    <p><strong>Recipient Email:</strong> {{ campaign.recipient_email }}</p>
+    <p><strong>Email Template:</strong> {{ campaign.email_template.get_type_display }}</p>
+    <p><strong>Cryptocurrency:</strong> {{ campaign.cryptocurrency.name }}</p>
+    <p><strong>Quantity:</strong> {{ campaign.quantity }}</p>
+    <p><strong>Minimum Balance:</strong> {{ campaign.min_balance }}</p>
+    <p><strong>Created At:</strong> {{ campaign.created_at }}</p>
+
+    <a href="{% url 'core:campaign_list' %}">Back to Campaign List</a>
+</body>
+</html>

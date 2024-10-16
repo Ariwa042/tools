@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import User, Deposit, Spend
+from django.contrib.auth.forms import AuthenticationForm
+
 
 # User registration form using Django's UserCreationForm
 class CustomUserCreationForm(UserCreationForm):
@@ -48,3 +50,23 @@ class SpendForm(forms.ModelForm):
         if amount <= 0:
             raise forms.ValidationError("Amount must be greater than zero.")
         return amount
+
+
+class EmailAuthenticationForm(AuthenticationForm):
+    email = forms.EmailField(label='Email')
+
+    def clean(self):
+        email = self.cleaned_data.get('email')
+        password = self.cleaned_data.get('password')
+
+        # Check if the email is associated with a user
+        try:
+            self.user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            raise forms.ValidationError('Invalid email or password.')
+
+        # Authenticate using the email and password
+        if not self.user.check_password(password):
+            raise forms.ValidationError('Invalid email or password.')
+
+        return self.cleaned_data
