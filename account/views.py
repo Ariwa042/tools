@@ -5,6 +5,8 @@ from django.contrib import messages
 from .forms import CustomUserCreationForm, DepositForm, SpendForm, EmailAuthenticationForm
 from .models import UserProfile, Deposit, Spend, Transactions
 from django.db.models import Sum
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
 
 # User registration view
 def register(request):
@@ -134,3 +136,19 @@ def transaction_history(request):
         'transactions': transactions
     }
     return render(request, 'account/transactions.html', context)
+
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Keeps the user logged in after password change
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('change_password')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(request.user)
+
+    return render(request, 'account/change_password.html', {'form': form})

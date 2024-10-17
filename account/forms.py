@@ -8,7 +8,7 @@ from django.contrib.auth.forms import AuthenticationForm
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True)
     full_name = forms.CharField(max_length=100)
-
+    
     class Meta:
         model = User
         fields = ('full_name', 'email', 'username', 'password1', 'password2')

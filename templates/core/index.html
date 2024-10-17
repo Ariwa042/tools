@@ -1,55 +1,106 @@
-{% load static %}
+{%load static%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Campaign and Account Management</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>XOLOTOOL V2.1</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
     <header>
-        <nav>
-            <ul>
-                <li><a href="{% url 'core:index' %}">Home</a></li>
-                <li><a href="{% url 'core:create_campaign' %}">Create Campaign</a></li>
-                <li><a href="{% url 'core:campaign_list' %}">View My Campaigns</a></li>
-
-                {% if user.is_authenticated %}
-                    <li><a href="{% url 'account:profile' %}">My Profile</a></li>
-                    <li><a href="{% url 'account:deposit' %}">Deposit XP</a></li>
-                    <li><a href="{% url 'account:spend' %}">Spend XP</a></li>
-                    <li><a href="{% url 'account:transactions' %}">Transaction History</a></li>
-                    <li><a href="{% url 'account:logout' %}">Logout</a></li>
-                {% else %}
-                    <li><a href="{% url 'account:login' %}">Login</a></li>
-                    <li><a href="{% url 'account:register' %}">Register</a></li>
-                {% endif %}
-            </ul>
-        </nav>
+        <div class="container">
+            <h1>XOLOTOOL V2.1</h1>
+            <nav>
+                <a href="#about">About</a>
+                <a href="#how-it-works">How it works</a>
+                <a href="#why-choose">Why choose us</a>
+                <a href="#faq">FAQ</a>
+                <a href="{% url 'account:login' %}" class="btn">Login</a>
+            </nav>
+        </div>
     </header>
 
     <main>
-        <h1>Welcome to the Campaign and Account Management System</h1>
-        <p>Manage your airdrop, giveaway, and refund campaigns with ease. Also, keep track of your XP balance and transactions.</p>
-
-        {% if user.is_authenticated %}
-            <p>Hello, {{ user.username }}! You can manage your campaigns and account from here.</p>
-            <div>
-                <h2>Account Actions</h2>
-                <ul>
-                    <li><a href="{% url 'account:deposit' %}">Deposit XP</a> - Add funds to your XP balance.</li>
-                    <li><a href="{% url 'account:spend' %}">Spend XP</a> - Use your XP to create campaigns.</li>
-                    <li><a href="{% url 'account:transactions' %}">View Transaction History</a> - Review all your deposits and spends.</li>
-                </ul>
+        <section id="banner">
+            <div class="container">
+                <h2>XOLOTOOL V2.1 is the multi-featured toolz provider</h2>
+                <p>Discover our range of advanced tools designed for efficiency and productivity.</p>
+                <a href="{% url 'account:register' %}" class="btn">Get Started</a>
             </div>
-        {% else %}
-            <p>Please <a href="{% url 'account:login' %}">Login</a> or <a href="{% url 'account:register' %}">Register</a> to manage your campaigns and account.</p>
-        {% endif %}
+        </section>
+
+        <section id="about">
+            <div class="container">
+                <h2>About Us</h2>
+                <p>XOLOTOOL is a revolutionary blockchain explorer, transaction accelerator, and notification tool. Our commitment is to deliver unparalleled services for blockchain enthusiasts.</p>
+            </div>
+        </section>
+
+        <section id="how-it-works">
+            <div class="container">
+                <h2>How it works</h2>
+                <div class="flex-container">
+                    <div class="flex-item">
+                        <h3>Create account</h3>
+                        <p>Simply get your account registered with your email.</p>
+                    </div>
+                    <div class="flex-item">
+                        <h3>Choose a tool</h3>
+                        <p>Select from our top notch tools for your needs.</p>
+                    </div>
+                    <div class="flex-item">
+                        <h3>Start using</h3>
+                        <p>Begin using the selected tool efficiently.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="why-choose">
+            <div class="container">
+                <h2>Why choose us</h2>
+                <div class="flex-container">
+                    <div class="flex-item">
+                        <h3>Easy GUI</h3>
+                        <p>The process is fully automated with an easy-to-use graphical interface.</p>
+                    </div>
+                    <div class="flex-item">
+                        <h3>Trusted Community</h3>
+                        <p>We have helped thousands of people in the community.</p>
+                    </div>
+                    <div class="flex-item">
+                        <h3>Active Support</h3>
+                        <p>Active 24/7 support to assist users.</p>
+                    </div>
+                    <div class="flex-item">
+                        <h3>Transparency</h3>
+                        <p>We are transparent and open about our services.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="faq">
+            <div class="container">
+                <h2>FAQ</h2>
+                <div class="faq-item">
+                    <h3>What can I use XOLOTOOL for?</h3>
+                    <p>XOLOTOOL provides various blockchain-related services. For specific details, please refer to our documentation.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Which payment methods are accepted?</h3>
+                    <p>At the moment we only accept Bank Transfers and Crypto Deposits.</p>
+                </div>
+                <!-- Add more FAQ items as needed -->
+            </div>
+        </section>
     </main>
 
     <footer>
-        <p>&copy; 2024 Campaign and Account Management. All Rights Reserved.</p>
+        <div class="container">
+            <p>&copy; 2024 XOLOTOOL. All rights reserved.</p>
+        </div>
     </footer>
 </body>
 </html>

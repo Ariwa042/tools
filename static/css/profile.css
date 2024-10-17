@@ -1,0 +1,176 @@
+/* Root Variables */
+:root {
+  --primary-color: #00ff00; /* Bright Green */
+  --secondary-color: #000; /* Black */
+  --background-color: #1a1a1a; /* Dark Background */
+  --text-color: #ffffff; /* White */
+  --accent-color: #00a8ff; /* Light Blue */
+  --error-color: #ff4d4d; /* Error Red */
+  --input-background: #2a2f3a; /* Input BG */
+  --input-text-color: #e0e0e0; /* Input Text */
+  --font-family: 'Poppins', sans-serif; /* Main Font */
+}
+
+/* Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--background-color);
+  color: var(--text-color);
+  min-height: 100vh;
+}
+
+/* Header and Navbar */
+header {
+  padding: 20px;
+  background-color: var(--secondary-color);
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+}
+
+.logo {
+  color: var(--primary-color);
+  font-size: 1.5rem;
+  font-weight: bold;
+  display: inline-block;
+}
+
+.menu-icon {
+  display: none;
+  cursor: pointer;
+  flex-direction: column;
+  gap: 5px;
+  float: right;
+}
+
+.menu-icon span {
+  display: block;
+  width: 25px;
+  height: 3px;
+  background-color: var(--text-color);
+}
+
+nav ul {
+  display: flex;
+  list-style: none;
+  gap: 20px;
+}
+
+nav ul li {
+  display: inline-block;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: var(--text-color);
+  font-weight: 600;
+  padding: 10px;
+  transition: color 0.3s;
+}
+
+nav ul li a:hover {
+  color: var(--accent-color);
+}
+
+/* Main Content */
+main {
+  margin-top: 100px;
+  padding: 20px;
+}
+
+.user-info, .statistics {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.profile-card, .status-card, .stat-card {
+  background-color: var(--secondary-color);
+  padding: 20px;
+  border-radius: 8px;
+  flex: 1 1 300px; /* Adjust to ensure responsiveness */
+  text-align: center;
+  color: var(--text-color);
+}
+
+.profile-card h2, .status-card h2, .stat-card h2 {
+  color: var(--primary-color);
+  font-size: 1.2rem;
+}
+
+.profile-card p, .status-card p, .stat-card p {
+  font-size: 1.5rem;
+  color: var(--accent-color);
+}
+
+.transaction-history {
+  margin-top: 40px;
+}
+
+.transaction-history table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.transaction-history th, .transaction-history td {
+  padding: 12px;
+  border: 1px solid var(--primary-color);
+  text-align: left;
+}
+
+.transaction-history th {
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+}
+
+.transaction-history td {
+  background-color: #2c2c2c; /* Dark row background */
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: var(--text-color);
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .menu-icon {
+    display: flex;
+  }
+
+  nav ul {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    background-color: var(--secondary-color);
+    border-radius: 8px;
+    width: 200px;
+    padding: 20px;
+  }
+
+  nav ul.active {
+    display: flex;
+  }
+
+  .user-info, .statistics {
+    flex-direction: column;
+  }
+
+  .transaction-history table {
+    font-size: 0.9rem;
+  }
+}

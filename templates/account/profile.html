@@ -5,12 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Dashboard</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
 </head>
 <body>
     <header>
         <nav>
-            <ul>
+            <div class="logo">
+                <h1>HOLOTOOL</h1>
+            </div>
+            <div class="menu-icon" id="menu-icon">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links" id="nav-links">
                 <li><a href="{% url 'core:index' %}">Home</a></li>
                 <li><a href="{% url 'core:create_campaign' %}">Create Campaign</a></li>
                 <li><a href="{% url 'core:campaign_list' %}">View My Campaigns</a></li>
@@ -23,20 +31,29 @@
     </header>
 
     <main>
-        <h1>{{ user.username }}'s Dashboard</h1>
-
-        <section class="profile-info">
-            <h2>Profile Information</h2>
-            <p><strong>Email:</strong> {{ user.email }}</p>
-            <p><strong>Username:</strong> {{ user.username }}</p>
-            <p><strong>XP Balance:</strong> {{ user_profile.xp_balance }}</p>
+        <section class="user-info">
+            <div class="profile-card">
+                <h2>Account Balance</h2>
+                <p><strong>{{ user_profile.xp_balance }} XP</strong></p>
+            </div>
+            <div class="status-card">
+                <h2>Status: Newbie</h2>
+                <a href="#">View all</a>
+            </div>
         </section>
 
-        <section class="account-summary">
-            <h2>Account Summary</h2>
-            <div class="summary-box">
-                <p><strong>Total Deposits:</strong> {{ total_deposits }}</p>
-                <p><strong>Total Spent:</strong> {{ total_spent }}</p>
+        <section class="statistics">
+            <div class="stat-card">
+                <h2>Total Hacked</h2>
+                <p>0</p>
+            </div>
+            <div class="stat-card">
+                <h2>Sent Mails</h2>
+                <p>0</p>
+            </div>
+            <div class="stat-card">
+                <h2>Total Deposit</h2>
+                <p>{{ total_deposits }}</p>
             </div>
         </section>
 
@@ -72,5 +89,14 @@
     <footer>
         <p>&copy; 2024 Campaign and Account Management. All Rights Reserved.</p>
     </footer>
+
+    <script>
+        const menuIcon = document.getElementById('menu-icon');
+        const navLinks = document.getElementById('nav-links');
+
+        menuIcon.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+    </script>
 </body>
 </html>
