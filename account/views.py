@@ -1,12 +1,14 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import CustomUserCreationForm, DepositForm, SpendForm, EmailAuthenticationForm
-from .models import UserProfile, Deposit, Spend, Transactions
+from .models import UserProfile, Deposit, Spend, Transactions, Payment_account
 from django.db.models import Sum
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
+from core.models import Campaign
+
 
 # User registration view
 def register(request):
@@ -63,12 +65,14 @@ def profile(request):
     total_deposits = Deposit.objects.filter(user=request.user, status='COMPLETED').aggregate(Sum('amount'))['amount__sum'] or 0
     total_spent = Spend.objects.filter(user=request.user, status='COMPLETED').aggregate(Sum('amount'))['amount__sum'] or 0
     transactions = Transactions.objects.filter(user=request.user)
+    campaigns_count = Campaign.objects.filter(user=request.user).count()
 
     context = {
         'user_profile': user_profile,
         'total_deposits': total_deposits,
         'total_spent': total_spent,
         'transactions': transactions,
+        'campaigns_count': campaigns_count,
     }
     return render(request, 'account/profile.html', context)
 
@@ -76,25 +80,42 @@ def profile(request):
 # Deposit view
 @login_required
 def deposit(request):
+    xp_packages = [
+        {'amount': 100, 'cost': 1000},
+        {'amount': 500, 'cost': 5000},
+        {'amount': 1000, 'cost': 10000},
+        {'amount': 5000, 'cost': 50000},
+    ]
+
+    payment_info = Payment_account.objects.first()  # Get the general payment info
+
     if request.method == 'POST':
-        form = DepositForm(request.POST)
-        if form.is_valid():
-            deposit = form.save(commit=False)
-            deposit.user = request.user
-            deposit.status = 'PENDING'
-            deposit.save()
-            Transactions.objects.create(
-                user=request.user,
-                type='DEPOSIT',
-                amount=deposit.amount,
-                status='PENDING'
-            )
-            messages.success(request, 'Deposit created, pending approval.')
-            return redirect('account:profile')
+        # Capture the selected amount from the hidden input field
+        selected_amount = request.POST.get('amount')
+
+        if selected_amount:
+            form = DepositForm(request.POST)
+            if form.is_valid():
+                deposit = form.save(commit=False)
+                deposit.user = request.user
+                deposit.amount = selected_amount  # Set the selected amount
+                deposit.status = 'PENDING'
+                deposit.save()
+                messages.success(request, 'Deposit created, pending approval.')
+                return redirect('account:profile')
+        else:
+            messages.error(request, 'No amount was selected.')
+            return redirect('account:deposit')
     else:
         form = DepositForm()
 
-    return render(request, 'account/deposit.html', {'form': form})
+    context = {
+        'form': form,
+        'xp_packages': xp_packages,
+        'payment_info': payment_info,
+    }
+    return render(request, 'account/deposit.html', context)
+
 
 
 # Spend view

@@ -185,7 +185,7 @@ def campaign_detail(request, pk):
 @login_required
 def victim_info_list(request):
     victim_infos = VictimInfo.objects.filter(user=request.user).order_by('-created_at')  # Corrected query
-    return render(request, 'core/victim_info_list.html', {'victim_infos': victim_infos})  # Corrected context variable
+    return render(request, 'core/victim_info_list.html', {'victim_infos':victim_infos})  # Corrected context variable
 
 
 ################################ EMAIL SENDING ###################################

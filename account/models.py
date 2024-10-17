@@ -55,6 +55,10 @@ class Payment_account(models.Model):
     def __str__(self):
         return f'Payment Account of {self.account_holder_name}'
 
+    class Meta:
+        verbose_name = 'Payment Account'
+        verbose_name_plural = 'Payment Accounts'
+
 
 class Deposit(models.Model):
     deposit_id = ShortUUIDField(unique=True, max_length=8, length=5, prefix='dp', alphabet='0123456789')
