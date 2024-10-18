@@ -9,9 +9,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-
 <div class="container">
     <h1>Buy XP</h1>
+    <p>Select XP package to purchase</p>
     <div class="xp-packages">
         <!-- Display XP packages -->
         {% for package in xp_packages %}
@@ -44,49 +44,42 @@
             </form>
         </div>
     </div>
-    </div>
 
-    <script>
-    // JavaScript for handling package selection and modal display
+    <!-- Deposit message overlay -->
+    <div id="deposit-message" class="deposit-message">
+        <div class="deposit-message-content">
+            <h3>Deposit in Progress</h3>
+            <p>Your deposit is being processed. Please wait...</p>
+            <div class="loader"></div>
+        </div>
+    </div>
+</div>
+
+<script>
     function selectPackage(amount, cost) {
-        // Set selected amount and cost in the modal
         document.getElementById('selected-amount').value = amount;
         document.getElementById('modal-cost').innerText = cost;
-
-        // Display the modal
         document.getElementById('payment-modal').style.display = 'block';
+        document.body.style.overflow = 'hidden';
     }
 
-    // Close the modal when clicking the close button
-    document.querySelector('.close').onclick = function() {
-        document.getElementById('payment-modal').style.display = 'none';
+    window.onclick = function(event) {
+        let modal = document.getElementById('payment-modal');
+        if (event.target == modal || event.target.className == 'close') {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
     }
+
+    document.getElementById('deposit-form').onsubmit = function(e) {
+        e.preventDefault();
+
+        // Show the deposit message
+        document.getElementById('deposit-message').style.display = 'flex';
+
+        // Submit the form
+        this.submit();
+    };
 </script>
-    <script>
-        // JavaScript for handling package selection and modal display
-        function selectPackage(amount, cost) {
-            document.getElementById('selected-amount').value = amount;
-            document.getElementById('modal-cost').innerText = cost;
-            document.getElementById('payment-modal').style.display = 'block';
-            document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
-        }
-
-        // Close the modal when clicking the close button or outside the modal
-        window.onclick = function(event) {
-            let modal = document.getElementById('payment-modal');
-            if (event.target == modal || event.target.className == 'close') {
-                modal.style.display = 'none';
-                document.body.style.overflow = 'auto'; // Re-enable scrolling
-            }
-        }
-
-        // Form submission handling
-        document.getElementById('deposit-form').onsubmit = function(e) {
-            e.preventDefault();
-            // Here you can add form validation logic
-            // If validation passes, you can submit the form
-            this.submit();
-        }
-    </script>
 </body>
 </html>

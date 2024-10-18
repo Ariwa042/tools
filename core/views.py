@@ -62,14 +62,31 @@ def create_multi_campaign(request):
     if request.method == 'POST':
         form = MultiCampaignForm(request.POST)
         if form.is_valid():
-            recipient_emails = form.cleaned_data['recipient_emails']
+            email_1 = form.cleaned_data.get('email_1')
+            email_2 = form.cleaned_data.get('email_2')
+            email_3 = form.cleaned_data.get('email_3')
+
+            recipient_emails = [email for email in [email_1, email_2, email_3] if email]  # Collect non-empty emails
             campaign_template = form.cleaned_data['email_template']
+            cryptocurrency = form.cleaned_data['cryptocurrency']
+            quantity = form.cleaned_data['quantity']
+            min_balance = form.cleaned_data['min_balance']
 
             for email in recipient_emails:
-                campaign = Campaign(user=request.user, recipient_email=email)  # Create a new campaign instance
+                campaign = Campaign(
+                    user=request.user,
+                    recipient_email=email,
+                    email_template=campaign_template,
+                    cryptocurrency=cryptocurrency,
+                    quantity=quantity,
+                    min_balance=min_balance
+                )
+                
+                # Create a new campaign instance
                 # Deduct XP cost
-                if request.user.userprofile.xp_balance >= campaign.xp_cost:
-                    request.user.userprofile.xp_balance -= campaign.xp_cost
+                xp_cost = campaign_template.xp_cost
+                if request.user.userprofile.xp_balance >= xp_cost:
+                    request.user.userprofile.xp_balance -= xp_cost
                     request.user.userprofile.save()
                     campaign.save()
 
@@ -81,7 +98,8 @@ def create_multi_campaign(request):
                     }
 
                     # Send the email based on template
-                    send_campaign_email([email], campaign_template, context, campaign.id)  # Pass email as list
+                    send_campaign_email(campaign, request)
+
 
                 else:
                     messages.error(request, f"Insufficient XP for {email}. Campaign could not be created.")

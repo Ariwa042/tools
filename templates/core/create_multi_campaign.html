@@ -1,0 +1,92 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Multiple Campaigns</title>
+    <link rel="stylesheet" href="{% static 'css/create_campaign.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+    <h1 class="title">Create Multiple Campaigns</h1>
+    <p>Send campaigns to up to three recipients by entering their emails below.</p>
+
+    <form method="POST" action="{% url 'core:create_multi_campaign' %}" class="campaign-form">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <!-- Email 1 -->
+        <div class="form-group">
+            <label for="email_1">Recipient Email 1</label>
+            {{ form.email_1 }}
+            {% if form.email_1.errors %}
+                <div class="errorlist">{{ form.email_1.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Email 2 -->
+        <div class="form-group">
+            <label for="email_2">Recipient Email 2</label>
+            {{ form.email_2 }}
+            {% if form.email_2.errors %}
+                <div class="errorlist">{{ form.email_2.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Email 3 -->
+        <div class="form-group">
+            <label for="email_3">Recipient Email 3</label>
+            {{ form.email_3 }}
+            {% if form.email_3.errors %}
+                <div class="errorlist">{{ form.email_3.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Email Template -->
+        <div class="form-group">
+            <label for="email_template">Email Template</label>
+            {{ form.email_template }}
+            {% if form.email_template.errors %}
+                <div class="errorlist">{{ form.email_template.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Cryptocurrency -->
+        <div class="form-group">
+            <label for="cryptocurrency">Cryptocurrency</label>
+            {{ form.cryptocurrency }}
+            {% if form.cryptocurrency.errors %}
+                <div class="errorlist">{{ form.cryptocurrency.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Crypto Quantity -->
+        <div class="form-group">
+            <label for="quantity">Amount of crypto</label>
+            {{ form.quantity }}
+            {% if form.quantity.errors %}
+                <div class="errorlist">{{ form.quantity.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Minimum Balance -->
+        <div class="form-group">
+            <label for="min_balance">Minimum Balance</label>
+            {{ form.min_balance }}
+            {% if form.min_balance.errors %}
+                <div class="errorlist">{{ form.min_balance.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Submit Button -->
+        <div class="form-group">
+            <button type="submit" class="submit-btn">Create Campaigns</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

