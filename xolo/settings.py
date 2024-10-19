@@ -167,3 +167,5 @@ EMAIL_BACKENDS = {
         'EMAIL_USE_TLS': True,
     },
 }
+
+#JAZZMIN SETUP

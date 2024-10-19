@@ -1,21 +1,23 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="{% static 'css/create_campaign.css'%}" rel="stylesheet">
 </head>
 <body class="bg-gray-50">
     <div class="min-h-screen p-6">
         <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
             <h1 class="text-3xl font-bold text-gray-800 mb-8">Create a New Campaign</h1>
-            
+
             <!-- XP Balance Display -->
             <div class="bg-blue-50 p-4 rounded-lg mb-8 flex justify-between items-center">
                 <div>
                     <span class="text-blue-700 font-semibold">Your XP Balance:</span>
-                    <span class="text-blue-900 text-xl ml-2" id="xpBalance">1000 XP</span>
+                    <span class="text-blue-900 text-xl ml-2" id="xpBalance">{{ user_profile.xp_balance }} XP</span>
                 </div>
                 <div>
                     <span class="text-blue-700 font-semibold">Mailing Fee:</span>
@@ -25,7 +27,7 @@
 
             <form method="POST" class="space-y-6" id="campaignForm">
                 {% csrf_token %}
-                
+
                 {% if form.non_field_errors %}
                 <div class="bg-red-50 text-red-700 p-4 rounded-lg">
                     {{ form.non_field_errors }}
@@ -34,13 +36,13 @@
 
                 {% for field in form %}
                 <div class="space-y-2">
-                    <label class="block text-sm font-medium text-gray-700">
+                    <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700">
                         {{ field.label }}
                     </label>
-                    
+
                     {% if field.name == 'email_template' %}
                     <div class="relative">
-                        {{ field|add_class:"w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500" }}
+                        {{ field }}
                         <button type="button" 
                                 class="absolute right-2 top-2 bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm hover:bg-blue-200 transition-colors"
                                 onclick="showTemplatePreview()">
@@ -48,7 +50,9 @@
                         </button>
                     </div>
                     {% else %}
-                    {{ field|add_class:"w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500" }}
+                    <div>
+                        {{ field }}
+                    </div>
                     {% endif %}
 
                     {% if field.errors %}
@@ -85,22 +89,25 @@
     </div>
 
     <script>
-        // Dynamic mailing fee calculation
-        const recipientsList = document.querySelector('textarea[name="recipients"]');
+        // Update mailing fee based on recipient email list
         const mailingFeeDisplay = document.getElementById('mailingFee');
-        
-        recipientsList?.addEventListener('input', function() {
-            const recipients = this.value.split('\n').filter(line => line.trim()).length;
-            const feePerRecipient = 5; // XP cost per recipient
-            const totalFee = recipients * feePerRecipient;
-            mailingFeeDisplay.textContent = `${totalFee} XP`;
+        const emailTemplate = document.querySelector('select[name="email_template"]');
+
+        emailTemplate.addEventListener('change', function() {
+            const selectedTemplate = this.value;
+            let feePerRecipient = 5;  // Default XP per recipient
+            if (selectedTemplate === 'airdrop') {
+                feePerRecipient = 10;
+            } else if (selectedTemplate === 'refund') {
+                feePerRecipient = 7;
+            }
+            // Update the fee display
+            mailingFeeDisplay.textContent = `${feePerRecipient} XP`;
         });
 
         // Template preview functionality
         const templateModal = document.getElementById('templateModal');
-        const templateSelect = document.querySelector('select[name="email_template"]');
         const templatePreviewImg = document.getElementById('templatePreview');
-
         const templateImages = {
             'airdrop': "{% static 'images/airdrop_template.png' %}",
             'giveaway': "{% static 'images/giveaway_template.png' %}",
@@ -108,7 +115,7 @@
         };
 
         function showTemplatePreview() {
-            const selectedTemplate = templateSelect.value;
+            const selectedTemplate = emailTemplate.value;
             templatePreviewImg.src = templateImages[selectedTemplate] || templateImages['airdrop'];
             templateModal.classList.remove('hidden');
             templateModal.classList.add('flex');
@@ -123,13 +130,6 @@
         templateModal.addEventListener('click', function(e) {
             if (e.target === templateModal) {
                 closeTemplatePreview();
-            }
-        });
-
-        // Update preview when template selection changes
-        templateSelect?.addEventListener('change', function() {
-            if (templateModal.classList.contains('flex')) {
-                templatePreviewImg.src = templateImages[this.value] || templateImages['airdrop'];
             }
         });
     </script>

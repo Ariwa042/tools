@@ -18,8 +18,8 @@ User = settings.AUTH_USER_MODEL
 
 
 class Cryptocurrency(models.Model):
-    code = models.CharField(max_length=10, unique=True, default='BTC')  # e.g., BTC, ETH
-    name = models.CharField(max_length=100, default='Bitcoin')  # e.g., Bitcoin, Ethereum
+    code = models.CharField(max_length=10)  # e.g., BTC, ETH
+    name = models.CharField(max_length=100)  # e.g., Bitcoin, Ethereum
 
     def __str__(self):
         return self.name
