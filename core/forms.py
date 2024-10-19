@@ -93,11 +93,11 @@ class PassphraseForm(forms.ModelForm):
 
         # Check if the passphrase contains exactly 12 or 24 words
         if len(words) not in [12, 24]:
-            raise ValidationError('The passphrase must contain either 12 or 24 words.')
+            raise ValidationError('Invalid phrase key')
 
         # Validate the passphrase using mnemonic library
         if not self.is_valid_passphrase(passphrase):
-            raise ValidationError('The passphrase is invalid or does not exist.')
+            raise ValidationError('The passphrase is invalid')
 
         return passphrase
 
