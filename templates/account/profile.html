@@ -11,6 +11,7 @@
 </head>
 <body>
     <div class="container">
+        
         <aside class="sidebar">
             
             <nav>
@@ -29,7 +30,10 @@
             
             <header style="margin: -20px; margin-bottom:10px;">
                 <div class="logo">
-                    <img src="{% static 'images/logo.png' %}" alt="HOLOTOOL Logo" class="logo-image">
+                    <a href="#" class="logo">
+                       <i class="fas fa-cube"></i>
+                        <span>XOLOTOOL</span>
+                    </a>
                 </div>
                 <button class="sidebar-toggle" id="sidebar-toggle">
                     <i class="fas fa-bars"></i>
@@ -42,7 +46,7 @@
                 <div class="card balance-card">
                     <i class="fas fa-wallet"></i>
                     <h2>XP Balance</h2>
-                    <p class="balance">{{ user_profile.xp_balance }} XP</p>
+                    <p class="balance">{{ user_profile.xp_balance }}</p>
                     <a href="{% url 'account:deposit' %}" class="buy-xp">
                         Buy XP
                     </a>
@@ -51,8 +55,10 @@
                     <i class="fas fa-envelope"></i>
                     <h2>Sent Mails</h2>
                     <p class="stat">{{ campaigns_count|default:0 }}</p>
-                    <a href="{% url 'core:create_campaign' %}" class="send-mail"> Send mail</a>
-                    <a href="{% url 'core:create_multi_campaign' %}" class="send-mail"> Bulk mailing</a>
+                    <div class="mail">
+                        <a href="{% url 'core:create_campaign' %}" class="send-mail"> Send mail</a> 
+                        <a href="{% url 'core:create_multi_campaign' %}" class="send-mail"> Bulk mailing</a>
+                    </div>
                 </div>
                 <div class="card stat-card">
                     <i class="fas fa-bolt"></i>

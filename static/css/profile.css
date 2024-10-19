@@ -40,17 +40,22 @@ body {
 }
 
 .logo {
-    text-align: center;
-    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text);
+    text-decoration: none;
 }
 
-.logo-image {
-    width: 120px;
-    height: auto;
-    transition: transform 0.3s;
+.logo span {
+    background: linear-gradient(135deg, #38bdf8, #6366f1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
-.logo-image:hover {
+.logo:hover {
     transform: scale(1.1);
 }
 
@@ -384,8 +389,16 @@ a.send-mail {
     border-radius: 15px;
     width: 10rem;
     text-align: center;
-    margin-top: 31px;
     font-weight: 500;
-    margin-right: 12.8px;
 }
 
+.mail {
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: stretch;
+    justify-content: space-between;
+    margin-top: 2rem;
+    gap: 25px;
+    width: 100%;
+}

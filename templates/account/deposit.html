@@ -34,7 +34,7 @@
                 <li>Account Number: {{ payment_info.account_number }}</li>
                 <li>Account Holder: {{ payment_info.account_holder_name }}</li>
             </ul>
-            <p>After payment, your XP will be credited to your account.</p>
+            <p>After payment confirmation, your XP will be credited to your account.</p>
             <!-- Form to submit selected amount -->
             <form method="POST" id="deposit-form">
                 {% csrf_token %}
@@ -49,7 +49,7 @@
     <div id="deposit-message" class="deposit-message">
         <div class="deposit-message-content">
             <h3>Deposit in Progress</h3>
-            <p>Your deposit is being processed. Please wait...</p>
+            <p>XP wil be credited when payment has been confirmed. Please wait...</p>
             <div class="loader"></div>
         </div>
     </div>

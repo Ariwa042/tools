@@ -151,12 +151,18 @@ def spend(request):
 # Transaction history view
 @login_required
 def transaction_history(request):
-    transactions = Transactions.objects.filter(user=request.user)
-
-    context = {
-        'transactions': transactions
-    }
-    return render(request, 'account/transactions.html', context)
+    deposits = Deposit.objects.filter(
+        user=request.user).order_by('-created_at')
+    spends = Spend.objects.filter(
+       user=request.user).order_by('-created_at')
+    return render(request, 'account/transactions.html', {
+        'deposits': deposits,
+        'spends': spends,
+    })
+#    context = {
+#        'transactions': transactions
+#    }
+#    return render(request, 'account/transactions.html', context)
 
 @login_required
 def change_password(request):
