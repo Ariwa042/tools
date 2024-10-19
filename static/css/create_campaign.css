@@ -1,7 +1,7 @@
 /* create_campaign.css */
 :root {
     padding: 15px;
-    --primary-color: #007bff;
+    --primary-color: #3498db;
     --secondary-color: #4db6ac;
     --background-color: #1a1a1a;
     --text-color: white;
@@ -143,4 +143,9 @@ select {
 
 .feedback-message {
     animation: fadeIn 0.3s ease-out;
+}
+.error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
 }

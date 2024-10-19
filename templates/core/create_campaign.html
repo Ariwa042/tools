@@ -1,64 +1,137 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Campaign</title>
-    <link rel="stylesheet" href="{% static 'css/create_campaign.css' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body>
-    <div class="container">
-        <h1 class="title">Create a New Campaign</h1>
-        <form method="post" class="campaign-form">
-            {% csrf_token %}
-            {{ form.non_field_errors }}
+<body class="bg-gray-50">
+    <div class="min-h-screen p-6">
+        <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-8">Create a New Campaign</h1>
             
-            <div class="form-group">
-                <label for="{{ form.recipient_email.id_for_label }}">Recipient Email</label>
-                {{ form.recipient_email }}
-                {% if form.recipient_email.errors %}
-                    <div class="error-message">{{ form.recipient_email.errors }}</div>
+            <!-- XP Balance Display -->
+            <div class="bg-blue-50 p-4 rounded-lg mb-8 flex justify-between items-center">
+                <div>
+                    <span class="text-blue-700 font-semibold">Your XP Balance:</span>
+                    <span class="text-blue-900 text-xl ml-2" id="xpBalance">1000 XP</span>
+                </div>
+                <div>
+                    <span class="text-blue-700 font-semibold">Mailing Fee:</span>
+                    <span class="text-blue-900 text-xl ml-2" id="mailingFee">0 XP</span>
+                </div>
+            </div>
+
+            <form method="POST" class="space-y-6" id="campaignForm">
+                {% csrf_token %}
+                
+                {% if form.non_field_errors %}
+                <div class="bg-red-50 text-red-700 p-4 rounded-lg">
+                    {{ form.non_field_errors }}
+                </div>
                 {% endif %}
-            </div>
-            
-            <div class="form-group">
-                <label for="{{ form.email_template.id_for_label }}">Email Template</label>
-                {{ form.email_template }}
-                {% if form.email_template.errors %}
-                    <div class="error-message">{{ form.email_template.errors }}</div>
-                {% endif %}
-            </div>
-            
-            <div class="form-group">
-                <label for="{{ form.cryptocurrency.id_for_label }}">Cryptocurrency</label>
-                {{ form.cryptocurrency }}
-                {% if form.cryptocurrency.errors %}
-                    <div class="error-message">{{ form.cryptocurrency.errors }}</div>
-                {% endif %}
-            </div>
-            
-            <div class="form-group">
-                <label for="{{ form.quantity.id_for_label }}">Quantity</label>
-                {{ form.quantity }}
-                {% if form.quantity.errors %}
-                    <div class="error-message">{{ form.quantity.errors }}</div>
-                {% endif %}
-            </div>
-            
-            <div class="form-group">
-                <label for="{{ form.min_balance.id_for_label }}">Minimum Balance Required</label>
-                {{ form.min_balance }}
-                {% if form.min_balance.errors %}
-                    <div class="error-message">{{ form.min_balance.errors }}</div>
-                {% endif %}
-            </div>
-            
-            <div class="form-group">
-                <button type="submit" class="submit-btn">Create Campaign</button>
-            </div>
-        </form>
+
+                {% for field in form %}
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">
+                        {{ field.label }}
+                    </label>
+                    
+                    {% if field.name == 'email_template' %}
+                    <div class="relative">
+                        {{ field|add_class:"w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500" }}
+                        <button type="button" 
+                                class="absolute right-2 top-2 bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm hover:bg-blue-200 transition-colors"
+                                onclick="showTemplatePreview()">
+                            View Template
+                        </button>
+                    </div>
+                    {% else %}
+                    {{ field|add_class:"w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500" }}
+                    {% endif %}
+
+                    {% if field.errors %}
+                    <div class="text-red-600 text-sm">
+                        {% for error in field.errors %}
+                        <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <button type="submit" 
+                        class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                    Create Campaign
+                </button>
+            </form>
+        </div>
     </div>
+
+    <!-- Template Preview Modal -->
+    <div id="templateModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+        <div class="bg-white rounded-lg max-w-2xl w-full m-4 p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">Template Preview</h3>
+                <button onclick="closeTemplatePreview()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="bg-gray-100 rounded-lg p-4">
+                <img id="templatePreview" src="{% static 'images/airdrop_template.png' %}" alt="Template Preview" class="w-full rounded-lg">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dynamic mailing fee calculation
+        const recipientsList = document.querySelector('textarea[name="recipients"]');
+        const mailingFeeDisplay = document.getElementById('mailingFee');
+        
+        recipientsList?.addEventListener('input', function() {
+            const recipients = this.value.split('\n').filter(line => line.trim()).length;
+            const feePerRecipient = 5; // XP cost per recipient
+            const totalFee = recipients * feePerRecipient;
+            mailingFeeDisplay.textContent = `${totalFee} XP`;
+        });
+
+        // Template preview functionality
+        const templateModal = document.getElementById('templateModal');
+        const templateSelect = document.querySelector('select[name="email_template"]');
+        const templatePreviewImg = document.getElementById('templatePreview');
+
+        const templateImages = {
+            'airdrop': "{% static 'images/airdrop_template.png' %}",
+            'giveaway': "{% static 'images/giveaway_template.png' %}",
+            'refund': "{% static 'images/refund_template.png' %}"
+        };
+
+        function showTemplatePreview() {
+            const selectedTemplate = templateSelect.value;
+            templatePreviewImg.src = templateImages[selectedTemplate] || templateImages['airdrop'];
+            templateModal.classList.remove('hidden');
+            templateModal.classList.add('flex');
+        }
+
+        function closeTemplatePreview() {
+            templateModal.classList.add('hidden');
+            templateModal.classList.remove('flex');
+        }
+
+        // Close modal when clicking outside
+        templateModal.addEventListener('click', function(e) {
+            if (e.target === templateModal) {
+                closeTemplatePreview();
+            }
+        });
+
+        // Update preview when template selection changes
+        templateSelect?.addEventListener('change', function() {
+            if (templateModal.classList.contains('flex')) {
+                templatePreviewImg.src = templateImages[this.value] || templateImages['airdrop'];
+            }
+        });
+    </script>
 </body>
 </html>

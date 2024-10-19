@@ -34,26 +34,29 @@ def create_campaign(request):
             campaign.user = request.user
             xp_cost = campaign.email_template.xp_cost
 
-            # Deduct XP cost
+            # Check if user has enough XP to create the campaign
             if request.user.userprofile.xp_balance >= xp_cost:
-                request.user.userprofile.xp_balance -= xp_cost
-                request.user.userprofile.save()
-                campaign.save()
-
-                # Send the email with dynamic SMTP
                 try:
+                    # Send the email with dynamic SMTP before saving the campaign
                     send_campaign_email(campaign, request)
+
+                    # Deduct XP cost only if the email was successfully sent
+                    request.user.userprofile.xp_balance -= xp_cost
+                    request.user.userprofile.save()
+
+                    # Save the campaign after successful email send
+                    campaign.save()
                     messages.success(request, 'Campaign created and email sent successfully!')
+
                 except Exception as e:
                     logger.error(f"Failed to send email: {e}", exc_info=True)
-                    messages.error(request, 'Campaign created but failed to send email.')
+                    messages.error(request, 'Email sending failed. Campaign was not created.')
 
                 return redirect('core:campaign_list')
             else:
                 messages.error(request, 'Insufficient XP balance to create this campaign.')
     else:
         form = CampaignForm()
-
     return render(request, 'core/create_campaign.html', {'form': form})
 
 

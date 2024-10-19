@@ -10,9 +10,9 @@
 
     <style>
         :root {
-            --primary: #6200ee;
+            --primary: #3498db;
             --primary-variant: #3700b3;
-            --secondary: #03dac6;
+            --secondary: #3496db;
             --bg: #121212;
             --surface: #1e1e1e;
             --error: #cf6679;
@@ -46,7 +46,7 @@
             margin-bottom: 2rem;
             color: var(--primary);
             font-size: clamp(1.8rem, 4vw, 2.5rem);
-            font-weight: 300;
+            font-weight: 700;
             letter-spacing: 0.1rem;
         }
 
@@ -167,7 +167,9 @@
 </head>
 <body>
         <div class="container">
-            <h2>Transaction History</h2>
+            <a href="{% url 'account:profile' %}" class="back-link">
+                <i class="fas fa-arrow-left"></i> Back to Profile
+            </a><h2>Transaction History</h2>
 
             <!-- Deposits Section -->
             <h3>Deposits</h3>
