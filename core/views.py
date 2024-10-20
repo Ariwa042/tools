@@ -94,8 +94,7 @@ def create_multi_campaign(request):
                     quantity=quantity,
                     min_balance=min_balance
                 )
-                
-                # Create a new campaign instance
+
                 # Deduct XP cost
                 xp_cost = campaign_template.xp_cost
                 if request.user.userprofile.xp_balance >= xp_cost:
@@ -103,17 +102,8 @@ def create_multi_campaign(request):
                     request.user.userprofile.save()
                     campaign.save()
 
-                    # Prepare context for email
-                    context = {
-                        'cryptocurrency': campaign.cryptocurrency,
-                        'quantity': campaign.quantity,
-                        'min_balance': campaign.min_balance,
-                    }
-
                     # Send the email based on template
                     send_campaign_email(campaign, request)
-
-
                 else:
                     messages.error(request, f"Insufficient XP for {email}. Campaign could not be created.")
                     continue
@@ -123,7 +113,19 @@ def create_multi_campaign(request):
     else:
         form = MultiCampaignForm()
 
-    return render(request, 'core/create_multi_campaign.html', {'form': form})
+    user_profile = UserProfile.objects.get(user=request.user)
+    email_templates = EmailTemplate.objects.all()
+
+    # Convert Decimal xp_cost to float or string before passing to frontend
+    email_templates_data = list(email_templates.values('id', 'type', 'xp_cost'))
+    for template in email_templates_data:
+        template['xp_cost'] = float(template['xp_cost'])  # Convert Decimal to float for JSON compatibility
+
+    return render(request, 'core/create_multi_campaign.html', {
+        'form': form, 
+        'email_templates': email_templates_data, 
+        'user_profile': user_profile
+    })
 
 
 

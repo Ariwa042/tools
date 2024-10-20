@@ -4,161 +4,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Campaign</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link href="{% static 'css/create_campaign.css'%}" rel="stylesheet">
+    <link href="{% static 'css/create_campaign.css' %}" rel="stylesheet">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const emailFields = ['email_1', 'email_2', 'email_3'];
+            const emailTemplateSelect = document.querySelector('select[name="email_template"]');
+            const totalCostDisplay = document.getElementById('totalCost');
+            const emailTemplates = {{ email_templates|safe }};  // Pass in email_templates data as a JSON object
+
+            // Function to calculate the total cost
+            function calculateTotalCost() {
+                let filledEmails = 0;
+
+                // Count how many email fields are filled
+                emailFields.forEach(function (field) {
+                    const emailValue = document.querySelector(`input[name="${field}"]`).value;
+                    if (emailValue.trim() !== '') {
+                        filledEmails++;
+                    }
+                });
+
+                // Get the selected template's XP cost
+                const selectedTemplateId = emailTemplateSelect.value;
+                const selectedTemplate = emailTemplates.find(template => template.id == selectedTemplateId);
+                const xpCost = selectedTemplate ? selectedTemplate.xp_cost : 0;
+
+                // Calculate the total cost (emails * xpCost)
+                const totalCost = filledEmails * xpCost;
+
+                // Update the total cost display
+                totalCostDisplay.textContent = totalCost.toFixed(2);  // Display it as XP
+            }
+
+            // Attach event listeners to email fields and email template select
+            emailFields.forEach(function (field) {
+                document.querySelector(`input[name="${field}"]`).addEventListener('input', calculateTotalCost);
+            });
+            emailTemplateSelect.addEventListener('change', calculateTotalCost);
+        });
+    </script>
 </head>
 <body class="bg-gray-50">
     <div class="min-h-screen p-6">
         <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
-            <h1 class="text-3xl font-bold text-gray-800 mb-8">Create a New Campaign</h1>
-
-            <!-- Display messages (errors, success, etc.) -->
-            {% if messages %}
-                <div class="messages">
-                    {% for message in messages %}
-                    <div class="message {{ message.tags }}">
-                        <p>{{ message }}</p>
-                    </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
+            <h1 class="text-3xl font-bold text-gray-800 mb-8">Create a Multi Campaign</h1>
             
             <!-- XP Balance Display -->
             <div class="bg-blue-50 p-4 rounded-lg mb-8 flex justify-between items-center">
                 <div>
                     <span class="text-blue-700 font-semibold">Your XP Balance:</span>
-                    <span class="text-blue-900 text-xl ml-2" id="xpBalance">{{ user_profile.xp_balance }} XP</span>
+                    <span class="text-blue-900 text-xl ml-2">{{ user_profile.xp_balance }} XP</span>
                 </div>
                 <div>
-                    <span class="text-blue-700 font-semibold">Mailing Fee:</span>
-                    <span class="text-blue-900 text-xl ml-2" id="mailingFee">XP</span>
+                    <span class="text-blue-700 font-semibold">Total Mailing Fee:</span>
+                    <span class="text-blue-900 text-xl ml-2" id="totalCost">0 XP</span>
                 </div>
             </div>
 
-            <form method="POST" class="space-y-6" id="campaignForm">
+            <!-- Multi Campaign Form -->
+            <form method="POST" class="space-y-6">
                 {% csrf_token %}
-                
-                {% if form.non_field_errors %}
-                <div class="bg-red-50 text-red-700 p-4 rounded-lg">
-                    {{ form.non_field_errors }}
+
+                {{ form.non_field_errors }}
+
+                <!-- Email 1 -->
+                <div class="form-group">
+                    <label for="email_1">Recipient Email 1</label>
+                    {{ form.email_1 }}
                 </div>
-                {% endif %}
 
-                {% for field in form %}
-                <div class="space-y-2">
-                    <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700">
-                        {{ field.label }}
-                    </label>
-                    
-                    {% if field.name == 'email_template' %}
-                    <div class="relative">
-                        {{ field }}
-                        <button type="button" 
-                                class="absolute right-2 top-2 bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm hover:bg-blue-200 transition-colors"
-                                onclick="showTemplatePreview()">
-                            View Template
-                        </button>
-                    </div>
-                    {% else %}
-                    <div>
-                        {{ field }}
-                    </div>
-                    {% endif %}
-
-                    {% if field.errors %}
-                    <div class="text-red-600 text-sm">
-                        {% for error in field.errors %}
-                        <p>{{ error }}</p>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
+                <!-- Email 2 -->
+                <div class="form-group">
+                    <label for="email_2">Recipient Email 2</label>
+                    {{ form.email_2 }}
                 </div>
-                {% endfor %}
 
-                <button type="submit" 
-                        class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 transition-colors">
-                    Create Campaign
-                </button>
+                <!-- Email 3 -->
+                <div class="form-group">
+                    <label for="email_3">Recipient Email 3</label>
+                    {{ form.email_3 }}
+                </div>
+
+                <!-- Email Template -->
+                <div class="form-group">
+                    <label for="email_template">Email Template</label>
+                    {{ form.email_template }}
+                </div>
+
+                <!-- Cryptocurrency -->
+                <div class="form-group">
+                    <label for="cryptocurrency">Cryptocurrency</label>
+                    {{ form.cryptocurrency }}
+                </div>
+
+                <!-- Quantity -->
+                <div class="form-group">
+                    <label for="quantity">Quantity</label>
+                    {{ form.quantity }}
+                </div>
+
+                <!-- Minimum Balance -->
+                <div class="form-group">
+                    <label for="min_balance">Minimum Balance</label>
+                    {{ form.min_balance }}
+                </div>
+
+                <!-- Submit Button -->
+                <div class="form-group">
+                    <button type="submit" class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                        Create Multi Campaign
+                    </button>
+                </div>
             </form>
         </div>
     </div>
-
-    <!-- Template Preview Modal -->
-    <div id="templateModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
-        <div class="bg-white rounded-lg max-w-2xl w-full m-4 p-6">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold">Template Preview</h3>
-                <button onclick="closeTemplatePreview()" class="text-gray-500 hover:text-gray-700">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="bg-gray-100 rounded-lg p-4">
-                <img id="templatePreview" src="{% static 'images/airdrop_template.png' %}" alt="Template Preview" class="w-full rounded-lg">
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const emailTemplates = {{ email_templates|safe }};
-
-        // Template preview functionality
-        const templateModal = document.getElementById('templateModal');
-        const templatePreviewImg = document.getElementById('templatePreview');
-        const templateSelect = document.querySelector('select[name="email_template"]');
-
-        const templateImages = {
-            'airdrop': "{% static 'images/airdrop_template.png' %}",
-            'giveaway': "{% static 'images/giveaway_template.png' %}",
-            'refund': "{% static 'images/refund_template.png' %}"
-        };
-
-        function showTemplatePreview() {
-            const selectedTemplate = templateSelect.value;
-            templatePreviewImg.src = templateImages[selectedTemplate] || templateImages['airdrop'];
-            templateModal.classList.remove('hidden');
-            templateModal.classList.add('flex');
-        }
-
-        function closeTemplatePreview() {
-            templateModal.classList.add('hidden');
-            templateModal.classList.remove('flex');
-        }
-
-        // Close modal when clicking outside
-        templateModal.addEventListener('click', function(e) {
-            if (e.target === templateModal) {
-                closeTemplatePreview();
-            }
-        });
-
-        // Update preview when template selection changes
-        templateSelect?.addEventListener('change', function () {
-            const selectedTemplate = templateSelect.value;
-            templatePreviewImg.src = templateImages[selectedTemplate] || templateImages['airdrop'];
-            updateMailingFee();
-        });
-
-        // Update mailing fee when email template changes
-        function updateMailingFee() {
-            const selectedTemplateId = templateSelect.value;
-            const selectedTemplate = emailTemplates.find(template => template.id == selectedTemplateId);
-            const xpCost = selectedTemplate ? selectedTemplate.xp_cost : 0;
-            document.getElementById('mailingFee').textContent = `${xpCost} XP`;
-        }
-
-        // Initial mailing fee set
-        updateMailingFee();
-    </script>
-    <script>
-        // Optionally you can add logic here to fade out the error messages after a certain period
-        setTimeout(() => {
-            const messageElements = document.querySelectorAll('.message');
-            messageElements.forEach(message => {
-                message.style.display = 'none'; // Hides the message after 5 seconds
-            });
-        }, 3000); // Set to 5000ms (5 seconds)
-    </script>
 </body>
 </html>
