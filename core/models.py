@@ -30,7 +30,7 @@ class Cryptocurrency(models.Model):
 
 
 class Wallet(models.Model):
-    name = models.CharField(max_length=20, unique=True, default='TrustWallet')  # e.g., TrustWallet, Coinbase
+    name = models.CharField(max_length=20, unique=True)  # e.g., TrustWallet, Coinbase
 
     def __str__(self):
         return self.name
@@ -40,7 +40,7 @@ class Wallet(models.Model):
         verbose_name_plural = 'Wallets'
 
 class EmailTemplate(models.Model):
-    type = models.CharField(max_length=20, choices=TEMPLATE_CHOICES, default='AIRDROP')
+    type = models.CharField(max_length=20, choices=TEMPLATE_CHOICES)
     xp_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
