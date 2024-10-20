@@ -41,10 +41,11 @@ body {
 
 /* Header */
 header {
-    background: rgba(15, 23, 42, 0.95);
+    background: rgb(15 23 42 / 95%);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    padding: 1rem 0;
+    padding: 20px;
+    margin-bottom: 30px;
     position: fixed;
     width: 100%;
     top: 0;
@@ -56,6 +57,20 @@ header .container {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.logo i {
+  color: var(--primary);
 }
 
 h1, h2, h3 {
@@ -96,7 +111,7 @@ nav a:hover {
   background-color: var(--primary-color);
   border: none;
   padding: 12px 20px;
-  border-radius: 5px;
+  border-radius: 0.5rem;
   cursor: pointer;
   width: 100%;
   font-size: 1.1em;
@@ -122,7 +137,7 @@ section {
 /* Register Container */
 .register-container {
   width: 100%;
-  max-width: 400px;
+  max-width: 700px;
   margin: 100px auto;
   padding: 30px;
   background-color: var(--background-color);
@@ -156,7 +171,7 @@ p.mt-3 {
   width: 100%;
   padding: 12px;
   border: #475a6f;
-  border-radius: 4px;
+  border-radius: 0.25rem;
   background-color: var(--input-background);
   color: var(--input-text-color);
   font-size: 1em;
@@ -164,6 +179,11 @@ p.mt-3 {
 
 .form-group input::placeholder {
   color: #cccccc;
+}
+
+a {
+  color: #38bdf6;
+  text-decoration: none;
 }
 
 .form-group input:focus {
@@ -183,7 +203,14 @@ p.mt-3 {
   border-radius: 4px;
   opacity: 0; /* Start hidden */
   transition: opacity 0.3s ease; /* Smooth transition */
-  display: none; /* Prevent layout shift */
+  visibility: hidden; /* Prevent layout shift */
+}
+
+/* Class to show the error message */
+.error-message.visible {
+  opacity: 1; /* Fully visible */
+  visibility: visible; /* Ensure it can be seen */
+  display: block; /* Set display to block */
 }
 
 
@@ -231,7 +258,6 @@ footer {
 
   .register-container {
     width: 100%;
-    margin: 50px auto;
   }
 
   .flex-item {

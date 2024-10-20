@@ -28,7 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-CSRF_TRUSTED_ORIGINS = ['https://4129b1d1-83ff-4cf4-baa7-e44cd73b70af-00-2joi3ovflrshj.spock.replit.dev']
+CSRF_TRUSTED_ORIGINS = ['https://localhost:8000']
 
 # Application definition
 

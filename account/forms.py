@@ -4,11 +4,20 @@ from .models import User, Deposit, Spend
 from django.contrib.auth.forms import AuthenticationForm
 
 
-# User registration form using Django's UserCreationForm
+from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from .models import User
+
 class CustomUserCreationForm(UserCreationForm):
-    email = forms.EmailField(required=True)
-    full_name = forms.CharField(max_length=100)
-    
+    email = forms.EmailField(required=True, error_messages={
+        'required': "Please enter your email address.",
+        'invalid': "Enter a valid email address."
+    })
+    full_name = forms.CharField(max_length=100, error_messages={
+        'required': "Please enter your full name.",
+        'max_length': "Your full name must be at most 100 characters."
+    })
+
     class Meta:
         model = User
         fields = ('full_name', 'email', 'username', 'password1', 'password2')
@@ -16,14 +25,28 @@ class CustomUserCreationForm(UserCreationForm):
     def clean_email(self):
         email = self.cleaned_data.get('email')
         if User.objects.filter(email=email).exists():
-            raise forms.ValidationError("Email is already in use.")
+            raise forms.ValidationError("This email is already in use.")
         return email
 
     def clean_username(self):
         username = self.cleaned_data.get('username')
         if User.objects.filter(username=username).exists():
-            raise forms.ValidationError("Username is already in use.")
+            raise forms.ValidationError("This username is already in use.")
         return username
+
+    def __init__(self, *args, **kwargs):
+        super(CustomUserCreationForm, self).__init__(*args, **kwargs)
+        self.fields['username'].error_messages = {
+            'required': "Please enter a username.",
+            'max_length': "Your username must be at most 150 characters.",
+        }
+        self.fields['password1'].error_messages = {
+            'required': "Please enter a password.",
+        }
+        self.fields['password2'].error_messages = {
+            'required': "Please confirm your password.",
+            'password_mismatch': "The two password fields didn't match.",
+        }
 
 
 # Form for deposit

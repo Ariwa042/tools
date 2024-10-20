@@ -8,6 +8,9 @@ from django.db.models import Sum
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from core.models import Campaign
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 # User registration view
@@ -16,9 +19,11 @@ def register(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            UserProfile.objects.create(user=user)
             messages.success(request, 'Account created successfully. Please log in.')
             return redirect('account:login')
+        else:
+            logger.debug(f'Form errors: {form.errors}')  # Log form errors
+            messages.error(request, 'Please correct the errors below.')
     else:
         form = CustomUserCreationForm()
 
@@ -170,12 +175,13 @@ def change_password(request):
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
             user = form.save()
-            update_session_auth_hash(request, user)  # Keeps the user logged in after password change
+            update_session_auth_hash(request, user)  # Keeps the user logged in
             messages.success(request, 'Your password was successfully updated!')
-            return redirect('change_password')
+            logger.info(f'Password updated for user {user}')
+            return redirect('account:profile')  # Redirect to profile page or another page after success
         else:
             messages.error(request, 'Please correct the error below.')
     else:
         form = PasswordChangeForm(request.user)
-
+    
     return render(request, 'account/change_password.html', {'form': form})
