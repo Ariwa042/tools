@@ -4,179 +4,487 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Campaign Dashboard</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.3/cdn.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4A90E2;
+            --primary-dark: #357ABD;
+            --success: #2ECC71;
+            --warning: #F1C40F;
+            --danger: #E74C3C;
+            --text-primary: #2C3E50;
+            --text-secondary: #7F8C8D;
+            --background: #F5F6FA;
+            --card: #FFFFFF;
+            --border: #E1E8ED;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .navbar {
+            background: var(--card);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .search-wrapper {
+            position: relative;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-wrapper i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .search {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 2.5rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .search:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+        }
+
+        .button {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .button-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .button-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .button-secondary {
+            background: white;
+            border: 2px solid var(--border);
+            color: var(--text-primary);
+        }
+
+        .button-secondary:hover {
+            background: var(--background);
+        }
+
+        .filters {
+            background: var(--background);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            display: none;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .filters.active {
+            display: grid;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 0.8rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            background: white;
+            transition: all 0.3s;
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th {
+            text-align: left;
+            padding: 1rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            border-bottom: 2px solid var(--border);
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:hover {
+            background: var(--background);
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 1rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+
+        .status-active {
+            background: rgba(46, 204, 113, 0.1);
+            color: var(--success);
+        }
+
+        .status-pending {
+            background: rgba(241, 196, 15, 0.1);
+            color: var(--warning);
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .action-button {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .action-button:hover {
+            color: var(--primary-dark);
+        }
+
+        .action-button.delete {
+            color: var(--danger);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-wrapper {
+                max-width: none;
+            }
+
+            .filters {
+                grid-template-columns: 1fr;
+            }
+
+            .table-container {
+                overflow-x: auto;
+            }
+        }
+    </style>
 </head>
-<body class="bg-gray-50">
-    <div x-data="{ 
-        searchTerm: '',
-        showFilters: false,
-        campaigns: [
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="#" class="logo">
+                <i class="fas fa-chart-line"></i>
+                Campaign Dashboard
+            </a>
+            <button class="button button-primary">
+                <i class="fas fa-plus"></i>
+                New Campaign
+            </button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="card">
+            <div class="controls">
+                <div class="search-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="search" placeholder="Search campaigns...">
+                </div>
+                <button class="button button-secondary" id="filterToggle">
+                    <i class="fas fa-filter"></i>
+                    Filters
+                </button>
+            </div>
+
+            <div class="filters" id="filters">
+                <div class="filter-group">
+                    <label>Cryptocurrency</label>
+                    <select>
+                        <option value="">All</option>
+                        <option value="bitcoin">Bitcoin</option>
+                        <option value="ethereum">Ethereum</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Status</label>
+                    <select>
+                        <option value="">All</option>
+                        <option value="active">Active</option>
+                        <option value="pending">Pending</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Date Range</label>
+                    <input type="date">
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Recipient</th>
+                            <th>Template</th>
+                            <th>Cryptocurrency</th>
+                            <th>Quantity</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="campaignList">
+                        <!-- Data will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination">
+                <span>Showing 1 to 5 of 12 entries</span>
+                <div class="pagination-controls">
+                    <button class="button button-secondary">Previous</button>
+                    <button class="button button-secondary">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data
+        const campaigns = [
             {
-                recipient_email: 'john@example.com',
+                email: 'john.doe@example.com',
                 template: 'Welcome Email',
                 cryptocurrency: 'Bitcoin',
-                quantity: 1.5,
-                min_balance: 0.5,
-                created_at: '2024-03-15',
+                quantity: '1.5 BTC',
                 status: 'active'
             },
             {
-                recipient_email: 'sarah@example.com',
+                email: 'jane.smith@example.com',
                 template: 'Reminder',
                 cryptocurrency: 'Ethereum',
-                quantity: 2.0,
-                min_balance: 1.0,
-                created_at: '2024-03-14',
+                quantity: '5.0 ETH',
                 status: 'pending'
+            },
+            {
+                email: 'mike.wilson@example.com',
+                template: 'Newsletter',
+                cryptocurrency: 'Bitcoin',
+                quantity: '0.8 BTC',
+                status: 'active'
             }
-        ]
-    }">
-        <nav class="bg-white shadow-sm">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between h-16">
-                    <div class="flex items-center">
-                        <h1 class="text-2xl font-bold text-gray-900">Campaign Dashboard</h1>
-                    </div>
-                    <div class="flex items-center">
-                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium">
-                            New Campaign
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </nav>
+        ];
 
-        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div class="bg-white rounded-lg shadow overflow-hidden">
-                <div class="p-6">
-                    <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
-                        <div class="relative w-full sm:w-64">
-                            <input
-                                type="text"
-                                x-model="searchTerm"
-                                placeholder="Search campaigns..."
-                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                            >
-                        </div>
-                        <button
-                            @click="showFilters = !showFilters"
-                            class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
-                        >
-                            <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                            </svg>
-                            Filters
-                        </button>
-                    </div>
+        // Toggle filters
+        const filterToggle = document.getElementById('filterToggle');
+        const filters = document.getElementById('filters');
 
-                    <div x-show="showFilters" class="mb-6 p-4 bg-gray-50 rounded-md">
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Cryptocurrency</label>
-                                <select class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
-                                    <option>All</option>
-                                    <option>Bitcoin</option>
-                                    <option>Ethereum</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Status</label>
-                                <select class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
-                                    <option>All</option>
-                                    <option>Active</option>
-                                    <option>Pending</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Date Range</label>
-                                <input type="date" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
-                            </div>
-                        </div>
-                    </div>
+        filterToggle.addEventListener('click', () => {
+            filters.classList.toggle('active');
+        });
 
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Recipient
-                                    </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Template
-                                    </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Cryptocurrency
-                                    </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Quantity
-                                    </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Status
-                                    </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Actions
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                <template x-for="campaign in campaigns" :key="campaign.recipient_email">
-                                    <tr class="hover:bg-gray-50">
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="flex items-center">
-                                                <div class="flex-shrink-0 h-10 w-10">
-                                                    <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                                                        <span x-text="campaign.recipient_email[0].toUpperCase()" class="text-gray-600 font-medium"></span>
-                                                    </div>
-                                                </div>
-                                                <div class="ml-4">
-                                                    <div class="text-sm font-medium text-gray-900" x-text="campaign.recipient_email"></div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm text-gray-900" x-text="campaign.template"></div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm text-gray-900" x-text="campaign.cryptocurrency"></div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm text-gray-900" x-text="campaign.quantity"></div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
-                                                  :class="campaign.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'"
-                                                  x-text="campaign.status">
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                            <button class="text-blue-600 hover:text-blue-900 mr-4">View</button>
-                                            <button class="text-red-600 hover:text-red-900">Delete</button>
-                                        </td>
-                                    </tr>
-                                </template>
-                            </tbody>
-                        </table>
-                    </div>
+        // Populate table
+        const campaignList = document.getElementById('campaignList');
 
-                    <div class="mt-4 flex items-center justify-between">
-                        <div class="text-sm text-gray-700">
-                            Showing <span class="font-medium">1</span> to <span class="font-medium">2</span> of <span class="font-medium">2</span> results
+        function getInitials(email) {
+            return email.split('@')[0].split('.').map(name => name[0].toUpperCase()).join('');
+        }
+
+        function renderCampaigns() {
+            campaignList.innerHTML = campaigns.map(campaign => `
+                <tr>
+                    <td>
+                        <div class="user-info">
+                            <div class="avatar">${getInitials(campaign.email)}</div>
+                            <div>${campaign.email}</div>
                         </div>
-                        <div class="flex-1 flex justify-end">
-                            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
-                                <button class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                                    Previous
-                                </button>
-                                <button class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                                    Next
-                                </button>
-                            </nav>
+                    </td>
+                    <td>${campaign.template}</td>
+                    <td>${campaign.cryptocurrency}</td>
+                    <td>${campaign.quantity}</td>
+                    <td>
+                        <span class="status status-${campaign.status}">
+                            ${campaign.status}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="actions">
+                            <button class="action-button">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                            <button class="action-button delete">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Search functionality
+        const searchInput = document.querySelector('.search');
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredCampaigns = campaigns.filter(campaign => 
+                campaign.email.toLowerCase().includes(searchTerm) ||
+                campaign.template.toLowerCase().includes(searchTerm) ||
+                campaign.cryptocurrency.toLowerCase().includes(searchTerm)
+            );
+            renderCampaigns(filteredCampaigns);
+        });
+
+        // Initial render
+        renderCampaigns();
+
+        // Add smooth transitions for interactive elements
+        document.querySelectorAll('.button, .action-button').forEach(button => {
+            button.addEventListener('mousedown', function() {
+                this.style.transform = 'scale(0.98)';
+            });
+            
+            button.addEventListener('mouseup', function() {
+                this.style.transform = 'scale(1)';
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+    </script>
 </body>
 </html>
