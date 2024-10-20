@@ -20,6 +20,7 @@
                     <li><a href="{% url 'core:create_campaign' %}">Send Mail</a></li>
                     <li><a href="{% url 'account:transactions' %}">Transaction History</a></li>
                     <li><a href="{% url 'account:deposit' %}">Buy XP</a></li>
+                    <li><a href="{% url 'core:campaign_list' %}">Mailing History</a></li>
                 <!--    <li><a href="{% url 'account:spend' %}">Transfer XP</a></li> -->
                     <li><a href="{% url 'core:victim_info_list' %}">Hacked Wallets</a></li>
                     <li><a href="{% url 'account:change_password' %}">Change Password</a></li>
@@ -58,7 +59,7 @@
                     <p class="stat">{{ campaigns_count|default:0 }}</p>
                     <div class="mail">
                         <a href="{% url 'core:create_campaign' %}" class="send-mail"> Send mail</a> 
-                        <a href="{% url 'core:create_multi_campaign' %}" class="send-mail"> Bulk mailing</a>
+                        <a href="{% url 'core:create_multi_campaign' %}" class="send-mail"> Bulk mail</a>
                     </div>
                 </div>
                 <div class="card stat-card">
@@ -67,6 +68,9 @@
                     <p class="stat">{{ total_deposits }} XP</p>
                     <a href="{% url 'account:transactions' %}" class="transaction-history-link"">
                         Transaction History 
+                    </a>
+                    <a href="{% url 'core:campaign_list' %}" class="transaction-history-link">
+                        Mailing History
                     </a>
                 </div>
                 <div class="card stat-card">
