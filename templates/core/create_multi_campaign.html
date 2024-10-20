@@ -15,10 +15,10 @@
             --success: #2ecc71;
             --warning: #f1c40f;
             --error: #e74c3c;
-            --surface-1: #ffffff;
-            --surface-2: #f8fafc;
+            --surface-1: #2c2c2c;
+            --surface-2: #33333;
             --text-1: #1a1a1a;
-            --text-2: #4b5563;
+            --text-2: #e5e7e9;
         }
 
         * {
@@ -29,7 +29,7 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #f0f7ff 0%, #e6f0f9 100%);
+            background: linear-gradient(135deg, #333 0%, #003f77 100%);
             color: var(--text-1);
             line-height: 1.6;
             min-height: 100vh;
@@ -103,13 +103,14 @@
         }
 
         input, select {
+            color: #e5e7e9;
             width: 100%;
             padding: 0.75rem 1rem;
             border: 1px solid #e2e8f0;
             border-radius: 0.5rem;
             font-size: 1rem;
             transition: all 0.2s;
-            background-color: var(--surface-1);
+            background-color: #5c5e5fad;
         }
 
         input:focus, select:focus {
@@ -123,12 +124,13 @@
         }
 
         .preview-button {
+            max-width: 8rem;
             position: absolute;
-            right: 0.75rem;
+            right: 1rem;
             top: 50%;
             transform: translateY(-50%);
-            background: var(--primary);
-            color: white;
+            background: transparent;
+            color: #b9bec4;
             border: none;
             padding: 0.5rem 1rem;
             border-radius: 9999px;
@@ -249,7 +251,7 @@
                     <div class="template-select-wrapper">
                         {{ form.email_template }}
                         <button type="button" class="preview-button" onclick="showTemplatePreview()">
-                            <i class="fas fa-eye"></i> Preview Template
+                            <i class="fas fa-eye"></i> Preview
                         </button>
                     </div>
                 </div>
