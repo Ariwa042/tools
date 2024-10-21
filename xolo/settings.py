@@ -10,29 +10,28 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-# settings.py
-
 from pathlib import Path
 import os
-from dotenv import load_dotenv  # Use python-dotenv to load environment variables
 
-# Load .env file
-load_dotenv()
-
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = 'django-insecure-wu70r19c=ua@4!js2gijsibhr$bq&6k!$5=nym2ojk1wuz1=(g'
 AUTH_USER_MODEL = 'account.User'
 
-
-DEBUG = os.getenv('DEBUG', 'True') == 'True'
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
 CSRF_TRUSTED_ORIGINS = ['https://localhost:8000']
 
 # Application definition
+
 INSTALLED_APPS = [
     'account',
     'core',
@@ -47,6 +46,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+  #  'whitenoise.middleware.WhiteNoiseMiddleware',  # 
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -75,56 +75,111 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'xolo.wsgi.application'
 
-# Database configuration using Supabase
+# Database
+# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
+        'NAME': 'postgres',  # Supabase DB name
+        'USER': 'postgres.bomntzpzxbhquhkjjkxg',  # Supabase user
+        'PASSWORD': 'Arinze042..',  # Replace with your Supabase DB password
+        'HOST': 'aws-0-eu-central-1.pooler.supabase.com',  # Supabase host
+        'PORT': '6543',  # Supabase port
     }
 }
 
-# Email settings for different email campaigns
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.getenv('DEFAULT_EMAIL_HOST', 'smtp.gmail.com')
-EMAIL_PORT = os.getenv('DEFAULT_EMAIL_PORT', 587)
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.getenv('DEFAULT_EMAIL_USER')
-EMAIL_HOST_PASSWORD = os.getenv('DEFAULT_EMAIL_PASSWORD')
 
-# Additional email configurations for other email types
-EMAIL_BACKENDS = {
-    'AIRDROP': {
-        'EMAIL_HOST': os.getenv('AIRDROP_EMAIL_HOST', 'smtp.gmail.com'),
-        'EMAIL_PORT': os.getenv('AIRDROP_EMAIL_PORT', 465),
-        'EMAIL_USE_TLS': os.getenv('AIRDROP_EMAIL_USE_TLS', 'True') == 'True',
-        'EMAIL_HOST_USER': os.getenv('AIRDROP_EMAIL_USER'),
-        'EMAIL_HOST_PASSWORD': os.getenv('AIRDROP_EMAIL_PASSWORD'),
-    },
-    'GIVEAWAY': {
-        'EMAIL_HOST': os.getenv('GIVEAWAY_EMAIL_HOST', 'smtp.gmail.com'),
-        'EMAIL_PORT': os.getenv('GIVEAWAY_EMAIL_PORT', 465),
-        'EMAIL_USE_TLS': os.getenv('GIVEAWAY_EMAIL_USE_TLS', 'True') == 'True',
-        'EMAIL_HOST_USER': os.getenv('GIVEAWAY_EMAIL_USER'),
-        'EMAIL_HOST_PASSWORD': os.getenv('GIVEAWAY_EMAIL_PASSWORD'),
-    },
-    'REFUND': {
-        'EMAIL_HOST': os.getenv('REFUND_EMAIL_HOST', 'smtp.gmail.com'),
-        'EMAIL_PORT': os.getenv('REFUND_EMAIL_PORT', 465),
-        'EMAIL_USE_TLS': os.getenv('REFUND_EMAIL_USE_TLS', 'True') == 'True',
-        'EMAIL_HOST_USER': os.getenv('REFUND_EMAIL_USER'),
-        'EMAIL_HOST_PASSWORD': os.getenv('REFUND_EMAIL_PASSWORD'),
-    },
-}
+# Password validation
+# https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
-# Static files
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME':
+        'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME':
+        'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME':
+        'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME':
+        'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
+
+# Internationalization
+# https://docs.djangoproject.com/en/4.2/topics/i18n/
+
+LANGUAGE_CODE = 'en-us'
+
+TIME_ZONE = 'UTC'
+
+USE_I18N = True
+
+USE_TZ = True
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/4.2/howto/static-files/
+
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR,'static'),  # Ensure this points to your development static files
+]
+
+#STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 
 # Default primary key field type
+# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# settings.py
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = 'True'
+EMAIL_HOST_USER = 'cointracker.llc@gmail.com'
+# Replace with your Gmail address
+EMAIL_HOST_PASSWORD = 'lmpp zwmt ogxd wjik' # Your Gmail app password
+DEFAULT_FROM_EMAIL = 'Escrow Trade <cointracker.llc@gmail.com>'
+
+
+EMAIL_TIMEOUT = 60
+
+CAMPAIGN_EMAIL_BACKENDS = {
+    'AIRDROP': {
+        'EMAIL_HOST': 'smtp.gmail.com',
+        'EMAIL_PORT': 587,
+        'EMAIL_HOST_USER': 'Airdrop cointracker.llc@gmail.com',
+        'EMAIL_HOST_PASSWORD': 'lmpp zwmt ogxd wjik',
+        'EMAIL_USE_TLS': True,
+          # Timeout in seconds
+
+    },
+    'GIVEAWAY': {
+        'EMAIL_HOST': 'smtp.gmail.com',
+        'EMAIL_PORT': 587,
+        'EMAIL_HOST_USER': 'TrustWallet cointracker.llc@gmail.com',
+        'EMAIL_HOST_PASSWORD': 'lmpp zwmt ogxd wjik',
+        'EMAIL_USE_TLS': True,
+    },
+    'REFUND': {
+        'EMAIL_HOST': 'smtp.gmail.com',
+        'EMAIL_PORT': 587,
+        'EMAIL_HOST_USER': 'CoinTrust cointracker.llc@gmail.com',
+        'EMAIL_HOST_PASSWORD': 'lmpp zwmt ogxd wjik',
+        'EMAIL_USE_TLS': True,
+    },
+
+}
+
+#JAZZMIN SETUP

