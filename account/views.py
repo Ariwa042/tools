@@ -9,6 +9,8 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from core.models import Campaign
 import logging
+from django.core.mail import send_mail
+from django.contrib.auth import get_user_model
 
 logger = logging.getLogger(__name__)
 
@@ -83,6 +85,7 @@ def profile(request):
 
 
 # Deposit view
+
 @login_required
 def deposit(request):
     xp_packages = [
@@ -95,7 +98,6 @@ def deposit(request):
     payment_info = Payment_account.objects.first()  # Get the general payment info
 
     if request.method == 'POST':
-        # Capture the selected amount from the hidden input field
         selected_amount = request.POST.get('amount')
 
         if selected_amount:
@@ -106,6 +108,21 @@ def deposit(request):
                 deposit.amount = selected_amount  # Set the selected amount
                 deposit.status = 'PENDING'
                 deposit.save()
+
+                # Send email to all superusers or staff
+                User = get_user_model()
+                superusers_or_staff = User.objects.filter(is_superuser=True) | User.objects.filter(is_staff=True)
+                email_list = [user.email for user in superusers_or_staff if user.email]
+
+                if email_list:
+                    send_mail(
+                        subject="New Deposit Pending Approval",
+                        message=f"A user has made a deposit of {deposit.amount} XP. Please review and approve it.",
+                        from_email='no-reply@yourdomain.com',
+                        recipient_list=email_list,
+                        fail_silently=False,
+                    )
+
                 messages.success(request, 'Deposit created, pending approval.')
                 return redirect('account:profile')
         else:
