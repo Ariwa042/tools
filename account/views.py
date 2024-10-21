@@ -21,8 +21,14 @@ def register(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
+            UserProfile.objects.create(user=user)
+
+            login(request, user)
+            
+
+
             messages.success(request, 'Account created successfully. Please log in.')
-            return redirect('account:login')
+            return redirect('account:profile')
         else:
             logger.debug(f'Form errors: {form.errors}')  # Log form errors
             messages.error(request, 'Please correct the errors below.')
