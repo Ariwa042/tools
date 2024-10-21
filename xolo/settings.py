@@ -147,7 +147,7 @@ EMAIL_TIMEOUT = 60
 EMAIL_BACKENDS = {
     'AIRDROP': {
         'EMAIL_HOST': 'smtp.gmail.com',
-        'EMAIL_PORT': 587,
+        'EMAIL_PORT': 465,
         'EMAIL_HOST_USER': 'escrowtrade02@gmail.com',
         'EMAIL_HOST_PASSWORD': 'lkeb fkzs dofo qxtp',
         'EMAIL_USE_TLS': True,
@@ -156,14 +156,14 @@ EMAIL_BACKENDS = {
     },
     'GIVEAWAY': {
         'EMAIL_HOST': 'smtp.gmail.com',
-        'EMAIL_PORT': 587,
+        'EMAIL_PORT': 465,
         'EMAIL_HOST_USER': 'escrowtrade02@gmail.com',
         'EMAIL_HOST_PASSWORD': 'lkeb fkzs dofo qxtp',
         'EMAIL_USE_TLS': True,
     },
     'REFUND': {
         'EMAIL_HOST': 'smtp.gmail.com',
-        'EMAIL_PORT': 587,
+        'EMAIL_PORT': 465,
         'EMAIL_HOST_USER': 'Coin Tracker cointracker.llc@gmail.com',
         'EMAIL_HOST_PASSWORD': 'lmpp zwmt ogxd wjik',
         'EMAIL_USE_TLS': True,
