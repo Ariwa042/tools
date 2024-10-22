@@ -56,8 +56,8 @@ class Campaign(models.Model):
     recipient_email = models.EmailField()
     email_template = models.ForeignKey(EmailTemplate, on_delete=models.CASCADE)
     cryptocurrency = models.ForeignKey(Cryptocurrency, on_delete=models.CASCADE)
-    quantity = models.DecimalField(max_digits=10, decimal_places=2)
-    min_balance = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity = models.DecimalField(max_digits=20, decimal_places=8)
+    min_balance = models.DecimalField(max_digits=20, decimal_places=8)
     created_at = models.DateTimeField(auto_now_add=True)
     
 
