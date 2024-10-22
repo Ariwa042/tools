@@ -5,3 +5,4 @@ httpx
 supabase
 mnemonic
 gunicorn
+shortuuid
