@@ -35,13 +35,14 @@ CSRF_TRUSTED_ORIGINS = ['https://localhost:8000']
 INSTALLED_APPS = [
     'account',
     'core',
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'jazzmin',
+    
 ]
 
 MIDDLEWARE = [
@@ -183,3 +184,8 @@ CAMPAIGN_EMAIL_BACKENDS = {
 }
 
 #JAZZMIN SETUP
+JAZZMIN_SETTINGS = {
+    "site_title": "My Admin",
+    "site_header": "My Admin",
+    "welcome_sign": "Welcome to the Admin Panel",
+}
