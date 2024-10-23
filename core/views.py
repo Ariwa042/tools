@@ -10,6 +10,8 @@ from django.template.loader import render_to_string
 from account.models import UserProfile
 from django.utils.html import strip_tags
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import get_connection
+
 
 
 logger = logging.getLogger(__name__)
