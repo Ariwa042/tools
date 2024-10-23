@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Emirex Tools V2.1</title>
+    <title>Emirex Tools</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">   
 
@@ -363,6 +363,32 @@
             font-size: 1.5rem;
             cursor: pointer;
         }
+        .floating-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+
+        .btn-float {
+            padding: 10px;
+            text-decoration: none;
+            border-radius: 155%;
+            background-color: #f0f8ff;
+            color: #3498db;
+            border: none;
+            font-size: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-float:hover {
+            background-color: #2729ae;
+            transform: scale(1.1);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
 
         @media (max-width: 1024px) {
             .nav-links {
@@ -548,8 +574,8 @@
 
     <section class="hero">
         <div class="container hero-content">
-            <h1>Next Generation Blockchain Tools</h1>
-            <p>Empower your blockchain journey with advanced tools designed for maximum efficiency and security.</p>
+            <h1>Next Generation Wallet Cracking Tools</h1>
+            <p>Empower your blockchain journey with advanced tools designed for maximum efficiency.</p>
             <div class="btn-group">
                 <a href="{% url 'account:register' %}" class="btn btn-primary">Start Exploring <i class="fas fa-rocket"></i></a>
                 <a href="{% url 'account:login'%}" class="btn btn-outline">Login <i class="fas fa-play"></i></a>
@@ -561,18 +587,18 @@
         <div class="container">
             <div class="section-title">
                 <h2>Powerful Features</h2>
-                <p>Everything you need to explore and interact with blockchain technology</p>
+                <p>Everything you need to explore and interact with advanced mailing technology</p>
             </div>
             <div class="features-grid">
                 <div class="feature-card">
                     <i class="fas fa-search feature-icon"></i>
                     <h3>Blockchain Explorer</h3>
-                    <p>Advanced tools for tracking and analyzing blockchain transactions with real-time updates.</p>
+                    <p>Advanced tools for cracking and analyzing wallet transactions with real-time updates.</p>
                 </div>
                 <div class="feature-card">
                     <i class="fas fa-bolt feature-icon"></i>
                     <h3>Transaction Accelerator</h3>
-                    <p>Boost your transaction speeds with our cutting-edge acceleration technology.</p>
+                    <p>Boost your crypto wallet cracking speeds with our cutting-edge acceleration technology.</p>
                 </div>
                 <div class="feature-card">
                     <i class="fas fa-bell feature-icon"></i>
@@ -582,13 +608,21 @@
             </div>
         </div>
     </section>
-
     <section id="how-it-works" class="section">
         <div class="container">
             <div class="section-title">
                 <h2>How It Works</h2>
                 <p>Get started in three simple steps</p>
             </div>
+    
+            <!-- Video Section -->
+            <div class="video-container">
+                <video width="100%" height="auto" controls>
+                    <source src="{% static 'videos/how-it-works.mp4' %}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+    
             <div class="features-grid">
                 <div class="feature-card">
                     <i class="fas fa-user-plus feature-icon"></i>
@@ -598,17 +632,17 @@
                 <div class="feature-card">
                     <i class="fas fa-tools feature-icon"></i>
                     <h3>Choose Your Tools</h3>
-                    <p>Select from our suite of professional blockchain tools.</p>
+                    <p>Select from our suite of professional mailing tools.</p>
                 </div>
                 <div class="feature-card">
                     <i class="fas fa-chart-line feature-icon"></i>
                     <h3>Track Progress</h3>
-                    <p>Monitor your blockchain activities</p>
+                    <p>Monitor your mailing activities</p>
                 </div>
             </div>
         </div>
     </section>
-
+    
     
     <section id="about" class="section">
         <div class="container">
@@ -651,7 +685,7 @@
             <div class="faq-container">
                 <div class="faq-item">
                     <h3>What is Emirex Tools?</h3>
-                    <p>Emirex Tools is a comprehensive suite of blockchain tools designed to help users interact with and analyze blockchain networks more effectively.</p>
+                    <p>Emirex Tools is a comprehensive suite of mailing tools designed to help users interact with and retrieve wallet info more effectively.</p>
                 </div>
                 <div class="faq-item">
                     <h3>How secure is Emirex Tools?</h3>
@@ -703,7 +737,9 @@
         </div>
     </div>
     <div class="overlay"></div>
-
+    <div class="floating-button">
+        <a class="btn btn-float" href="https://chat.whatsapp.com/IwGcgf2EPMCA0P4daaKyJ6?text=Hello, I am {{ user.username}} from Emirex tools!"><i class="fas fa-paper-plane"></i> Message Us</a>
+    </div>
     <script>
         // Mobile Menu Toggle
         const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
