@@ -26,9 +26,9 @@ AUTH_USER_MODEL = 'account.User'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*', 'https://emires.onrender.com']
+ALLOWED_HOSTS = ['*', 'https://emirex.onrender.com']
 
-CSRF_TRUSTED_ORIGINS = ['https://emires.onrender.com']
+CSRF_TRUSTED_ORIGINS = ['https://emirex.onrender.com']
 
 # Application definition
 
@@ -151,7 +151,7 @@ EMAIL_USE_TLS = 'True'
 EMAIL_HOST_USER = 'cointracker.llc@gmail.com'
 # Replace with your Gmail address
 EMAIL_HOST_PASSWORD = 'lmpp zwmt ogxd wjik' # Your Gmail app password
-DEFAULT_FROM_EMAIL = 'Emires Tools <cointracker.llc@gmail.com>'
+DEFAULT_FROM_EMAIL = 'Emirex Tools <cointracker.llc@gmail.com>'
 
 
 EMAIL_TIMEOUT = 60
