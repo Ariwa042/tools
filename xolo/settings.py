@@ -151,7 +151,7 @@ EMAIL_USE_TLS = 'True'
 EMAIL_HOST_USER = 'cointracker.llc@gmail.com'
 # Replace with your Gmail address
 EMAIL_HOST_PASSWORD = 'lmpp zwmt ogxd wjik' # Your Gmail app password
-DEFAULT_FROM_EMAIL = 'Escrow Trade <cointracker.llc@gmail.com>'
+DEFAULT_FROM_EMAIL = 'Emires Tools <cointracker.llc@gmail.com>'
 
 
 EMAIL_TIMEOUT = 60
