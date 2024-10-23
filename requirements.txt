@@ -6,3 +6,4 @@ supabase
 mnemonic
 gunicorn
 shortuuid
+whitenoise
