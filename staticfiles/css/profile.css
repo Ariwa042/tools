@@ -210,20 +210,22 @@ header {
 }
 
 .btn-float {
+    padding: 10px;
+    text-decoration: none;
     width: 60px;
     height: 60px;
-    border-radius: 50%;
-    background-color: var(--secondary-color);
-    color: white;
+    border-radius: 155%;
+    background-color: #f0f8ff;
+    color: #3498db;
     border: none;
-    font-size: 24px;
+    font-size: 12px;
     cursor: pointer;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
 }
 
 .btn-float:hover {
-    background-color: #27ae60;
+    background-color: #2729ae;
     transform: scale(1.1);
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
 }
