@@ -229,7 +229,7 @@ def victim_info_list(request):
 
 
 def get_base_url(request):
-    return f"{request.scheme}://{get_current_site(request).domain}"
+    return f"https://wallet-nrrw.onrender.com"
 
 
 
